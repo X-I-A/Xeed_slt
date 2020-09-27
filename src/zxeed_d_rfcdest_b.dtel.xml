@@ -9,7 +9,7 @@
     <SCRLEN1>10</SCRLEN1>
     <SCRLEN2>20</SCRLEN2>
     <SCRLEN3>30</SCRLEN3>
-    <DDTEXT>HTTP Main Destination</DDTEXT>
+    <DDTEXT>HTTP Backup Destination</DDTEXT>
     <SCRTEXT_S>Bck Dest.</SCRTEXT_S>
     <SCRTEXT_M>Backup HTTP Dest.</SCRTEXT_M>
     <SCRTEXT_L>Backup HTTP Destination</SCRTEXT_L>
