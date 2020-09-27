@@ -1,0 +1,410 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_FUGR" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <AREAT>Xeed SLT to HTTP Plugin Tools</AREAT>
+   <INCLUDES>
+    <SOBJ_NAME>LZXEED_TOOLSTOP</SOBJ_NAME>
+    <SOBJ_NAME>SAPLZXEED_TOOLS</SOBJ_NAME>
+   </INCLUDES>
+   <FUNCTIONS>
+    <item>
+     <FUNCNAME>Z_XEED_ARCHIVE_DATA</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>Save Data to a local path</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_CONTENT</PARAMETER>
+       <TYP>STRING</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_PATH</PARAMETER>
+       <TYP>ZXEED_D_PATHINTERN</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_SEQ_NO</PARAMETER>
+       <TYP>CHAR20</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <TYP>DMC_MT_IDENTIFIER</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <TYP>TABNAME</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_AGE</PARAMETER>
+       <TYP>NUMC10</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>PATH_ERROR</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_CONTENT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Data</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_PATH</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Archive File Location</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_SEQ_NO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Sequence Number</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Mass Transfer ID</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table Name</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_AGE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Age Number</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>PATH_ERROR</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Cannot identifer the correction Path</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_COCKPIT</FUNCNAME>
+     <SHORT_TEXT>Xeed SLT Http Agent Load Management</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_DATA</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>DMC_MT_IDENTIFIER</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>TABNAME</TYP>
+      </RSIMP>
+     </IMPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_DATA</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Data</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Mass Transfer ID</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table Name</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_GET_DATA_FRAG_SIZE</FUNCNAME>
+     <SHORT_TEXT>Get Data Frag Size</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_DATA</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_SIZE_LIMIT</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>I</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>E_FRAG_SIZE</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>I</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_DATA</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Input Data</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_SIZE_LIMIT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Size Limit (KBytes)</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_FRAG_SIZE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Size (line numer)</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_GET_INILOAD</FUNCNAME>
+     <SHORT_TEXT>Get initial load related information</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>DMC_MT_IDENTIFIER</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>TABNAME</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_SEQ_NO</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>CHAR20</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>E_HEADERS</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>DDFIELDS</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>E_DASHBOARD</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>ZXEED_DASHBOARD</TYP>
+      </RSEXP>
+     </EXPORT>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>NOT_FOUND</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Mass Transfer ID</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table Name</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_SEQ_NO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Sequence No</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_HEADERS</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>DD Description Table</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_DASHBOARD</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>SLT Transformation Dashbord</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>NOT_FOUND</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Data Not Found</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_POST_DATA</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>Post SLT Data To Configured Destination</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_DESTINATION</PARAMETER>
+       <TYP>RFCDEST</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_CONTENT</PARAMETER>
+       <TYP>STRING</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_SEQ_NO</PARAMETER>
+       <TYP>CHAR20</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <TYP>DMC_MT_IDENTIFIER</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <TYP>TABNAME</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_AGE</PARAMETER>
+       <TYP>NUMC10</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>E_STATUS</PARAMETER>
+       <TYP>I</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>E_RESPONSE</PARAMETER>
+       <TYP>STRING</TYP>
+      </RSEXP>
+     </EXPORT>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>RFC_ERROR</EXCEPTION>
+      </RSEXC>
+      <RSEXC>
+       <EXCEPTION>CONNECTION_ERROR</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_DESTINATION</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Logical destination (specified in function call)</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_CONTENT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Plein Text Content String</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_SEQ_NO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Sequence Number</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Mass Transfer ID</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table Name</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_AGE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Age Number</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_STATUS</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>HTTP Return Code</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_RESPONSE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>HTTP Response Body</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>RFC_ERROR</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Cannot create http client from RFC</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>CONNECTION_ERROR</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Cannot Communicate to Destination</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_SEND_DATA</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>Send Data Process</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_CONTENT</PARAMETER>
+       <TYP>STRING</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_SEQ_NO</PARAMETER>
+       <TYP>CHAR20</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <TYP>DMC_MT_IDENTIFIER</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <TYP>TABNAME</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_AGE</PARAMETER>
+       <TYP>NUMC10</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_RFCDES</PARAMETER>
+       <TYP>ZXEED_D_RFCDEST</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_PATH</PARAMETER>
+       <TYP>ZXEED_D_PATHINTERN</TYP>
+      </RSIMP>
+     </IMPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_CONTENT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Send Content</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_SEQ_NO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Sequence Number</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Mass Transfer ID</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table Name</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_AGE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Age Number</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_RFCDES</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>HTTP Backup Destination</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_PATH</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Archive File Location</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+   </FUNCTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>
