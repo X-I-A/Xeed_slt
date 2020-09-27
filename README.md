@@ -10,7 +10,7 @@
 * From Transport Order: All of the released transport order could be found under each release
 ### Customization
 * The SLT Server should have been correctly configured
-* Transaction SM59: Creating an RFC Connection Type G -> That's the destination of your SLT flow
+* Transaction SM59: Creating an RFC Connection Type G -> That's the destination of your SLT to HTTP flow
 * Transaction FILE: Creating a logical location to hold the flow in the case of network issues
 ### Adding required Tables
 Launching the report Z_XEED_OPERATION:
