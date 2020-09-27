@@ -3,5 +3,22 @@
 * Xeed SLT Agent is a plugin of SAP SLT (Landscape Transformation) Server. It can copy the output flow of SLT Server in a HTTP Flow.
 * The output HTTP flow can be caught by other compatible Xeed Agents in order to put the live data streaming into Insight Layer 
 * This plugin is one of the building block of the X-I-A.
-* Xeed - Insight - Analysis (X-I-A Architecture) is an end-user needs' driven data solution: more details could by found at https://x-i-a.com
+* Xeed - Insight - Analysis (X-I-A Architecture) is a full scope data solution. Connecting to [my profile @ Linkedin](https://www.linkedin.com/in/xia-chen-soral/) to get the latest update
 ## Quick Start Guide
+### Installation
+* From Github: Cloning the repo by using [abapGit](https://github.com/abapGit/abapGit)
+* From Transport Order: All of the released transport order could be found under each release
+### Customization
+* The SLT Server should have been correctly configured
+* Transaction SM59: Creating an RFC Connection Type G -> That's the destination of your SLT to HTTP flow
+* Transaction FILE: Creating a logical location to hold the flow in the case of network issues
+### Adding required Tables
+Launching the report Z_XEED_OPERATION:
+* Mass Transfer ID: Could be found by transaction LTRS
+* Table Name: Using the multiple selection to do massive operation (range is not supported yet.)
+* HTTP Destination and File Location should be the one of the step Customization
+* Backup HTTP Destination: once the slt flow is saved at filesystem, the system will use this HTTP destination to resend the message. (Not real-time)
+* Source or Result Flag: S = Source and R = Result
+* Max Frag Size: The limitation of HTTP body. Once exceeded, the data will be splitted to several http message.
+## Video Guide
+<To be done>
