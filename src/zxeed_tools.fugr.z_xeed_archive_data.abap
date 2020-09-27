@@ -3,11 +3,9 @@ FUNCTION z_xeed_archive_data.
 *"*"Local Interface:
 *"  IMPORTING
 *"     VALUE(I_CONTENT) TYPE  STRING
-*"     VALUE(I_PATH) TYPE  ZXEED_D_PATHINTERN
 *"     VALUE(I_SEQ_NO) TYPE  CHAR20
-*"     VALUE(I_MT_ID) TYPE  DMC_MT_IDENTIFIER
-*"     VALUE(I_TABNAME) TYPE  TABNAME
 *"     VALUE(I_AGE) TYPE  NUMC10
+*"     VALUE(I_PARAM) TYPE  ZXEED_PARAM
 *"  EXCEPTIONS
 *"      PATH_ERROR
 *"----------------------------------------------------------------------
@@ -15,11 +13,11 @@ FUNCTION z_xeed_archive_data.
         lv_fname_json TYPE c LENGTH 255.
 
 * WRITE TO FILE
-  CONCATENATE i_seq_no '-' i_age '-' i_tabname '-' i_mt_id '.json' INTO lv_filename.
+  CONCATENATE i_seq_no '-' i_age '-' i_param-tabname '-' i_param-mt_id '.json' INTO lv_filename.
 
   CALL FUNCTION 'FILE_GET_NAME_USING_PATH'
     EXPORTING
-      logical_path               = i_path
+      logical_path               = i_param-pathintern
       file_name                  = lv_filename
     IMPORTING
       file_name_with_path        = lv_fname_json

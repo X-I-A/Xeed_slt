@@ -44,7 +44,8 @@ FUNCTION Z_XEED_GET_DATA_FRAG_SIZE.
 
 * 1. Tested with MARA, no need to * 2 for Uni-code => Might to be adjusted in the future
 * 2. lv_sample_nb could be lv_sample_nb + 1, however, no need to be so precised
-  lv_frag_size = i_size_limit * 1000 / ( strlen( lv_json ) / lv_sample_nb ).
+* 3. Using 750 instead of 1024 to reduce the risk of data overflow
+  lv_frag_size = i_size_limit * 750 / ( strlen( lv_json ) / lv_sample_nb ).
   IF lv_frag_size >= lv_total_nb.
     RETURN.
   ELSE.
