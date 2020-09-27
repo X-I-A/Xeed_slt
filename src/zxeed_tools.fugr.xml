@@ -18,24 +18,16 @@
        <TYP>STRING</TYP>
       </RSIMP>
       <RSIMP>
-       <PARAMETER>I_PATH</PARAMETER>
-       <TYP>ZXEED_D_PATHINTERN</TYP>
-      </RSIMP>
-      <RSIMP>
        <PARAMETER>I_SEQ_NO</PARAMETER>
        <TYP>CHAR20</TYP>
       </RSIMP>
       <RSIMP>
-       <PARAMETER>I_MT_ID</PARAMETER>
-       <TYP>DMC_MT_IDENTIFIER</TYP>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>I_TABNAME</PARAMETER>
-       <TYP>TABNAME</TYP>
-      </RSIMP>
-      <RSIMP>
        <PARAMETER>I_AGE</PARAMETER>
        <TYP>NUMC10</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_PARAM</PARAMETER>
+       <TYP>ZXEED_PARAM</TYP>
       </RSIMP>
      </IMPORT>
      <EXCEPTION>
@@ -50,29 +42,19 @@
        <STEXT>Data</STEXT>
       </RSFDO>
       <RSFDO>
-       <PARAMETER>I_PATH</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Archive File Location</STEXT>
-      </RSFDO>
-      <RSFDO>
        <PARAMETER>I_SEQ_NO</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Sequence Number</STEXT>
       </RSFDO>
       <RSFDO>
-       <PARAMETER>I_MT_ID</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Mass Transfer ID</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>I_TABNAME</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Table Name</STEXT>
-      </RSFDO>
-      <RSFDO>
        <PARAMETER>I_AGE</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Age Number</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_PARAM</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>SLT 2 HTTP Parameter Table</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>PATH_ERROR</PARAMETER>
@@ -101,12 +83,17 @@
        <REFERENCE>X</REFERENCE>
        <TYP>TABNAME</TYP>
       </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_PARAM</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>ZXEED_PARAM</TYP>
+      </RSIMP>
      </IMPORT>
      <DOCUMENTATION>
       <RSFDO>
        <PARAMETER>I_DATA</PARAMETER>
        <KIND>P</KIND>
-       <STEXT>Data</STEXT>
+       <STEXT>Source Data</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_MT_ID</PARAMETER>
@@ -117,6 +104,11 @@
        <PARAMETER>I_TABNAME</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Table Name</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_PARAM</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>SLT 2 HTTP Parameter Table</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
@@ -237,10 +229,6 @@
      <SHORT_TEXT>Post SLT Data To Configured Destination</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
-       <PARAMETER>I_DESTINATION</PARAMETER>
-       <TYP>RFCDEST</TYP>
-      </RSIMP>
-      <RSIMP>
        <PARAMETER>I_CONTENT</PARAMETER>
        <TYP>STRING</TYP>
       </RSIMP>
@@ -249,16 +237,12 @@
        <TYP>CHAR20</TYP>
       </RSIMP>
       <RSIMP>
-       <PARAMETER>I_MT_ID</PARAMETER>
-       <TYP>DMC_MT_IDENTIFIER</TYP>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>I_TABNAME</PARAMETER>
-       <TYP>TABNAME</TYP>
-      </RSIMP>
-      <RSIMP>
        <PARAMETER>I_AGE</PARAMETER>
        <TYP>NUMC10</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_PARAM</PARAMETER>
+       <TYP>ZXEED_PARAM</TYP>
       </RSIMP>
      </IMPORT>
      <EXPORT>
@@ -281,11 +265,6 @@
      </EXCEPTION>
      <DOCUMENTATION>
       <RSFDO>
-       <PARAMETER>I_DESTINATION</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Logical destination (specified in function call)</STEXT>
-      </RSFDO>
-      <RSFDO>
        <PARAMETER>I_CONTENT</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Plein Text Content String</STEXT>
@@ -296,19 +275,14 @@
        <STEXT>Sequence Number</STEXT>
       </RSFDO>
       <RSFDO>
-       <PARAMETER>I_MT_ID</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Mass Transfer ID</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>I_TABNAME</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Table Name</STEXT>
-      </RSFDO>
-      <RSFDO>
        <PARAMETER>I_AGE</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Age Number</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_PARAM</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>SLT 2 HTTP Parameter Table</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_STATUS</PARAMETER>
@@ -346,24 +320,12 @@
        <TYP>CHAR20</TYP>
       </RSIMP>
       <RSIMP>
-       <PARAMETER>I_MT_ID</PARAMETER>
-       <TYP>DMC_MT_IDENTIFIER</TYP>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>I_TABNAME</PARAMETER>
-       <TYP>TABNAME</TYP>
-      </RSIMP>
-      <RSIMP>
        <PARAMETER>I_AGE</PARAMETER>
        <TYP>NUMC10</TYP>
       </RSIMP>
       <RSIMP>
-       <PARAMETER>I_RFCDES</PARAMETER>
-       <TYP>ZXEED_D_RFCDEST</TYP>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>I_PATH</PARAMETER>
-       <TYP>ZXEED_D_PATHINTERN</TYP>
+       <PARAMETER>I_PARAM</PARAMETER>
+       <TYP>ZXEED_PARAM</TYP>
       </RSIMP>
      </IMPORT>
      <DOCUMENTATION>
@@ -378,29 +340,14 @@
        <STEXT>Sequence Number</STEXT>
       </RSFDO>
       <RSFDO>
-       <PARAMETER>I_MT_ID</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Mass Transfer ID</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>I_TABNAME</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Table Name</STEXT>
-      </RSFDO>
-      <RSFDO>
        <PARAMETER>I_AGE</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Age Number</STEXT>
       </RSFDO>
       <RSFDO>
-       <PARAMETER>I_RFCDES</PARAMETER>
+       <PARAMETER>I_PARAM</PARAMETER>
        <KIND>P</KIND>
-       <STEXT>HTTP Backup Destination</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>I_PATH</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Archive File Location</STEXT>
+       <STEXT>SLT 2 HTTP Parameter Table</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>

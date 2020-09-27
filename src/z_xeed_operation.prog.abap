@@ -7,10 +7,10 @@ REPORT z_xeed_operation.
 
 TABLES: zxeed_param.
 
-DATA: lt_rul_map    LIKE TABLE OF iuuc_ass_rul_map,
-      ls_rul_map    LIKE LINE OF lt_rul_map,
-      lt_xeed_param LIKE TABLE OF zxeed_param,
-      ls_xeed_param LIKE LINE OF lt_xeed_param.
+DATA: gt_rul_map    LIKE TABLE OF iuuc_ass_rul_map,
+      gs_rul_map    LIKE LINE OF gt_rul_map,
+      gt_xeed_param LIKE TABLE OF zxeed_param,
+      gs_xeed_param LIKE LINE OF gt_xeed_param.
 
 SELECT-OPTIONS: o_mtid FOR zxeed_param-mt_id NO INTERVALS NO-EXTENSION.
 SELECT-OPTIONS: o_tabnam FOR zxeed_param-tabname NO INTERVALS.
@@ -77,60 +77,47 @@ START-OF-SELECTION.
   IF add = 'X' AND o_mtid-low IS NOT INITIAL. " Add Data
     LOOP AT o_tabnam WHERE low IS NOT INITIAL.
       SELECT SINGLE mt_id FROM zxeed_param
-        INTO ls_xeed_param-mt_id
+        INTO gs_xeed_param-mt_id
         WHERE mt_id = o_mtid-low
           AND tabname = o_tabnam-low.
       IF sy-subrc IS INITIAL.
         WRITE 'Entry Exists - Do Nothing'(w01).
         CONTINUE. "Entries Exist, No need to do anything
       ENDIF.
-      ls_xeed_param-mt_id = o_mtid-low.
-      ls_xeed_param-tabname = o_tabnam-low.
-      ls_xeed_param-rfcdest = o_rfc_m-low.
-      ls_xeed_param-pathintern = o_file-low.
-      ls_xeed_param-rfcdest_b = o_rfc_b-low.
-      ls_xeed_param-src_flag = o_srctyp-low.
-      ls_xeed_param-frag_size = o_fgsize-low.
-      ls_xeed_param-basisversion = o_basis-low.
-
-      APPEND ls_xeed_param TO lt_xeed_param.
-
-      ls_rul_map-mt_id   = o_mtid-low.
-      ls_rul_map-tabname = o_tabnam-low.
-      ls_rul_map-basisversion = o_basis-low.
-      ls_rul_map-event = 'EOT'.
-      ls_rul_map-include = 'Z_XEED_LOAD'.
-      ls_rul_map-status = '02'.
-      CONCATENATE '''' o_mtid-low '''' INTO ls_rul_map-imp_param_1.
-      CONCATENATE '''' o_tabnam-low '''' INTO ls_rul_map-imp_param_2.
-      APPEND ls_rul_map TO lt_rul_map.
+      PERFORM update_param.
+      APPEND gs_xeed_param TO gt_xeed_param.
+      gs_rul_map-mt_id   = o_mtid-low.
+      gs_rul_map-tabname = o_tabnam-low.
+      gs_rul_map-basisversion = o_basis-low.
+      gs_rul_map-event = 'EOT'.
+      gs_rul_map-include = 'Z_XEED_LOAD'.
+      gs_rul_map-status = '02'.
+      CONCATENATE '''' o_mtid-low '''' INTO gs_rul_map-imp_param_1.
+      CONCATENATE '''' o_tabnam-low '''' INTO gs_rul_map-imp_param_2.
+      APPEND gs_rul_map TO gt_rul_map.
     ENDLOOP.
-    IF lt_xeed_param[] IS NOT INITIAL AND lt_rul_map[] IS NOT INITIAL.
-      MODIFY zxeed_param FROM TABLE lt_xeed_param.
-      MODIFY iuuc_ass_rul_map FROM TABLE lt_rul_map.
+    IF gt_xeed_param[] IS NOT INITIAL AND gt_rul_map[] IS NOT INITIAL.
+      MODIFY zxeed_param FROM TABLE gt_xeed_param.
+      MODIFY iuuc_ass_rul_map FROM TABLE gt_rul_map.
       WRITE 'Add Successfully'(s01).
     ENDIF.
 
   ELSEIF upd = 'X'. " Update Data
     LOOP AT o_tabnam WHERE low IS NOT INITIAL.
       SELECT SINGLE mt_id FROM zxeed_param
-        INTO ls_xeed_param-mt_id
+        INTO gs_xeed_param-mt_id
         WHERE mt_id = o_mtid-low
           AND tabname = o_tabnam-low.
       IF sy-subrc IS NOT INITIAL.
         WRITE 'Entry Not Exists'(w02).
         CONTINUE. "Entries Exist, No need to do anything
       ENDIF.
-      ls_xeed_param-mt_id = o_mtid-low.
-      ls_xeed_param-tabname = o_tabnam-low.
-      ls_xeed_param-rfcdest = o_rfc_m-low.
-      ls_xeed_param-pathintern = o_file-low.
-      ls_xeed_param-rfcdest_b = o_rfc_b-low.
-      APPEND ls_xeed_param TO lt_xeed_param.
+      PERFORM update_param.
+      APPEND gs_xeed_param TO gt_xeed_param.
 
     ENDLOOP.
-    IF lt_xeed_param[] IS NOT INITIAL.
-      MODIFY zxeed_param FROM TABLE lt_xeed_param.
+    IF gt_xeed_param[] IS NOT INITIAL.
+      MODIFY zxeed_param FROM TABLE gt_xeed_param.
       WRITE 'Update Successfully'(s02).
     ENDIF.
 
@@ -148,3 +135,23 @@ START-OF-SELECTION.
     ENDLOOP.
     WRITE 'Entry Deleted Successfully'(s03).
   ENDIF.
+
+* Move Screen data to param data
+FORM update_param.
+  gs_xeed_param-mt_id = o_mtid-low.
+  gs_xeed_param-tabname = o_tabnam-low.
+  gs_xeed_param-rfcdest = o_rfc_m-low.
+  gs_xeed_param-pathintern = o_file-low.
+  gs_xeed_param-rfcdest_b = o_rfc_b-low.
+  gs_xeed_param-src_flag = o_srctyp-low.
+  gs_xeed_param-frag_size = o_fgsize-low.
+  gs_xeed_param-basisversion = o_basis-low.
+  IF p_adv = abap_true.
+    gs_xeed_param-src_sysid = o_sid-low.
+    gs_xeed_param-src_db = o_db-low.
+    gs_xeed_param-src_schema = o_schema-low.
+  ENDIF.
+  IF gs_xeed_param-src_sysid IS INITIAL.
+    gs_xeed_param-src_sysid = gs_xeed_param-mt_id.
+  ENDIF.
+ENDFORM.

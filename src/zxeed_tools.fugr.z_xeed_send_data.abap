@@ -4,11 +4,8 @@ FUNCTION Z_XEED_SEND_DATA.
 *"  IMPORTING
 *"     VALUE(I_CONTENT) TYPE  STRING
 *"     VALUE(I_SEQ_NO) TYPE  CHAR20
-*"     VALUE(I_MT_ID) TYPE  DMC_MT_IDENTIFIER
-*"     VALUE(I_TABNAME) TYPE  TABNAME
 *"     VALUE(I_AGE) TYPE  NUMC10
-*"     VALUE(I_RFCDES) TYPE  ZXEED_D_RFCDEST
-*"     VALUE(I_PATH) TYPE  ZXEED_D_PATHINTERN
+*"     VALUE(I_PARAM) TYPE  ZXEED_PARAM
 *"----------------------------------------------------------------------
 
 * Always Post Data to HTTP
@@ -17,11 +14,9 @@ FUNCTION Z_XEED_SEND_DATA.
 
   CALL FUNCTION 'Z_XEED_POST_DATA'
     EXPORTING
-      i_destination    = i_rfcdes
+      i_param          = i_param
       i_content        = i_content
       i_seq_no         = i_seq_no
-      i_mt_id          = i_mt_id
-      i_tabname        = i_tabname
       i_age            = i_age
     IMPORTING
       e_status         = lv_http_status
@@ -33,11 +28,9 @@ FUNCTION Z_XEED_SEND_DATA.
 * In the case of fail, archive data
     CALL FUNCTION 'Z_XEED_ARCHIVE_DATA'
       EXPORTING
+        i_param   = i_param
         i_content = i_content
-        i_path    = i_path
         i_seq_no  = i_seq_no
-        i_mt_id   = i_mt_id
-        i_tabname = i_tabname
         i_age     = i_age.
   ENDIF.
 
