@@ -82,7 +82,7 @@ FUNCTION z_xeed_cockpit.
     GET TIME STAMP FIELD lv_timestamp.
     MOVE lv_timestamp TO lv_seq_no_tmp.
     CONDENSE lv_seq_no_tmp.
-    CONCATENATE lv_seq_no_tmp(14) lv_seq_no_tmp+15(3) INTO lv_seq_no.
+    CONCATENATE lv_seq_no_tmp(14) lv_seq_no_tmp+15(6) INTO lv_seq_no.
 
     CALL FUNCTION 'Z_XEED_GET_INILOAD'
       EXPORTING

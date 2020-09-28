@@ -12,8 +12,8 @@ FUNCTION z_xeed_archive_data.
   DATA: lv_filename   TYPE c LENGTH 255,
         lv_fname_json TYPE c LENGTH 255.
 
-* WRITE TO FILE
-  CONCATENATE i_seq_no '-' i_age '-' i_param-tabname '-' i_param-mt_id '.json' INTO lv_filename.
+* WRITE TO FILE - Max 32 Characters
+  CONCATENATE i_seq_no '-' i_age INTO lv_filename.
 
   CALL FUNCTION 'FILE_GET_NAME_USING_PATH'
     EXPORTING
