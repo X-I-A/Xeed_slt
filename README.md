@@ -12,6 +12,7 @@
 * The SLT Server should have been correctly configured
 * Transaction SM59: Creating an RFC Connection Type G -> That's the destination of your SLT to HTTP flow
 * Transaction FILE: Creating a logical location to hold the flow in the case of network issues
+* Resend Job Creation: Using the standard report RSBTONEJOB2 to schedule the resend report Z_XEED_RESEND
 ### Adding required Tables
 Launching the report Z_XEED_OPERATION:
 * Mass Transfer ID: Could be found by transaction LTRS
