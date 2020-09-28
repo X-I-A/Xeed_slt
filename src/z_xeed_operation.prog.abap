@@ -7,6 +7,11 @@ REPORT z_xeed_operation.
 
 TABLES: zxeed_param.
 
+CONSTANTS: c_rfc_def_err  TYPE i VALUE 1,
+           c_rfc_conn_err TYPE i VALUE 2,
+           c_path_err     TYPE i VALUE 1.
+DATA: gv_rc_code TYPE i.
+
 DATA: gt_rul_map    LIKE TABLE OF iuuc_ass_rul_map,
       gs_rul_map    LIKE LINE OF gt_rul_map,
       gt_xeed_param LIKE TABLE OF zxeed_param,
@@ -16,7 +21,6 @@ SELECT-OPTIONS: o_mtid FOR zxeed_param-mt_id NO INTERVALS NO-EXTENSION.
 SELECT-OPTIONS: o_tabnam FOR zxeed_param-tabname NO INTERVALS.
 SELECT-OPTIONS: o_rfc_m FOR zxeed_param-rfcdest NO INTERVALS NO-EXTENSION MODIF ID ins.
 SELECT-OPTIONS: o_file FOR zxeed_param-pathintern NO INTERVALS NO-EXTENSION MODIF ID ins.
-SELECT-OPTIONS: o_rfc_b FOR zxeed_param-rfcdest_b NO INTERVALS NO-EXTENSION MODIF ID ins.
 SELECT-OPTIONS: o_srctyp FOR zxeed_param-src_flag DEFAULT 'R' NO INTERVALS NO-EXTENSION MODIF ID ins.
 SELECT-OPTIONS: o_fgsize FOR zxeed_param-frag_size DEFAULT 1000 NO INTERVALS NO-EXTENSION MODIF ID ins.
 SELECT-OPTIONS: o_basis FOR zxeed_param-basisversion OBLIGATORY DEFAULT '750' NO INTERVALS NO-EXTENSION MODIF ID ins.
@@ -26,6 +30,7 @@ SELECTION-SCREEN BEGIN OF BLOCK grp02 WITH FRAME TITLE TEXT-b02.
 SELECT-OPTIONS: o_sid FOR zxeed_param-src_sysid NO INTERVALS NO-EXTENSION MODIF ID adv.
 SELECT-OPTIONS: o_db FOR zxeed_param-src_db NO INTERVALS NO-EXTENSION MODIF ID adv.
 SELECT-OPTIONS: o_schema FOR zxeed_param-src_schema NO INTERVALS NO-EXTENSION MODIF ID adv.
+SELECT-OPTIONS: o_rfc_b FOR zxeed_param-rfcdest_b NO INTERVALS NO-EXTENSION MODIF ID adv.
 SELECTION-SCREEN END OF BLOCK grp02.
 
 SELECTION-SCREEN BEGIN OF BLOCK grp01 WITH FRAME TITLE TEXT-b01.
@@ -74,6 +79,28 @@ AT SELECTION-SCREEN OUTPUT.
   ENDIF.
 
 START-OF-SELECTION.
+* Step 1: Parameter Check of add / update mode
+  IF add = 'X' OR upd = 'X'.
+    IF o_mtid-low IS INITIAL or o_tabnam-low IS INITIAL.
+      WRITE 'MT ID or Table Name shouldn''t be empty, do nothing'(e01).
+    ENDIF.
+
+    PERFORM check_rfc_connection USING o_rfc_m-low CHANGING gv_rc_code.
+    IF gv_rc_code EQ c_rfc_def_err.
+      WRITE 'Main RFC Definition Error, do nothing'(e02).
+      RETURN.
+    ELSEIF gv_rc_code EQ c_rfc_conn_err.
+      WRITE 'Main RFC Connection Error, do nothing'(e03).
+      RETURN.
+    ENDIF.
+
+    PERFORM check_path USING o_file-low CHANGING gv_rc_code.
+    IF gv_rc_code EQ c_path_err.
+      WRITE 'Archive Path Error, do nothing'(e06).
+      RETURN.
+    ENDIF.
+  ENDIF.
+
   IF add = 'X' AND o_mtid-low IS NOT INITIAL. " Add Data
     LOOP AT o_tabnam WHERE low IS NOT INITIAL.
       SELECT SINGLE mt_id FROM zxeed_param
@@ -153,5 +180,80 @@ FORM update_param.
   ENDIF.
   IF gs_xeed_param-src_sysid IS INITIAL.
     gs_xeed_param-src_sysid = gs_xeed_param-mt_id.
+  ENDIF.
+ENDFORM.
+
+* Internet Connection Check
+FORM check_rfc_connection USING rfc_name TYPE zl2h_param-rfcdest
+                       CHANGING r_code TYPE i .
+  DATA: lo_http_client TYPE REF TO if_http_client,
+        lv_status      TYPE i.
+
+  cl_http_client=>create_by_destination(
+      EXPORTING
+        destination              = rfc_name
+      IMPORTING
+        client                   = lo_http_client
+        EXCEPTIONS
+        argument_not_found       = 1
+        destination_not_found    = 2
+        destination_no_authority = 3
+        plugin_not_active        = 4
+        internal_error           = 5
+        OTHERS                   = 6
+    ).
+  IF sy-subrc <> 0.
+    r_code = 1.
+    RETURN.
+  ENDIF.
+
+  CALL METHOD lo_http_client->request->set_method( if_http_request=>co_request_method_get ).
+
+  CALL METHOD lo_http_client->send
+    EXCEPTIONS
+      http_communication_failure = 1
+      http_invalid_state         = 2
+      http_processing_failed     = 3
+      OTHERS                     = 4.
+  IF sy-subrc <> 0.
+    r_code = 2.
+    RETURN.
+  ENDIF.
+
+  CALL METHOD lo_http_client->receive
+    EXCEPTIONS
+      http_communication_failure = 1
+      http_invalid_state         = 2
+      http_processing_failed     = 3
+      OTHERS                     = 4.
+  IF sy-subrc <> 0.
+    r_code = 2.
+    RETURN.
+  ENDIF.
+
+  CALL METHOD lo_http_client->response->get_status( IMPORTING code = lv_status ).
+
+  IF lv_status NE 200.
+    r_code = 2.
+    RETURN.
+  ENDIF.
+ENDFORM.
+
+* Path Check
+FORM check_path USING path_name TYPE zl2h_param-pathintern
+             CHANGING r_code TYPE i .
+  CALL FUNCTION 'FILE_GET_NAME_USING_PATH'
+    EXPORTING
+      logical_path               = path_name
+      file_name                  = 'dummy.txt'
+    EXCEPTIONS
+      path_not_found             = 1
+      missing_parameter          = 2
+      operating_system_not_found = 3
+      file_system_not_found      = 4
+      OTHERS                     = 5.
+  IF sy-subrc <> 0.
+    r_code = 1.
+    RETURN.
   ENDIF.
 ENDFORM.

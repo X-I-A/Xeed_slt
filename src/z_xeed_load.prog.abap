@@ -16,7 +16,9 @@ FIELD-SYMBOLS: <fs_data_src> TYPE ANY TABLE,
 
 * Get the parameter
 SELECT SINGLE * FROM zxeed_param
-  INTO CORRESPONDING FIELDS OF ls_param.
+  INTO CORRESPONDING FIELDS OF ls_param
+ WHERE mt_id   = i_p1
+   AND tabname = i_p2.
 IF sy-subrc IS NOT INITIAL.
   RETURN. " Something goes wrong, do nothing.
 ENDIF.
