@@ -1,4 +1,4 @@
-FUNCTION Z_XEED_GET_DATA_FRAG_SIZE.
+FUNCTION z_xeed_get_data_frag_size.
 *"----------------------------------------------------------------------
 *"*"Local Interface:
 *"  IMPORTING
@@ -15,7 +15,9 @@ FUNCTION Z_XEED_GET_DATA_FRAG_SIZE.
         lv_sample_nb TYPE i,
         lv_frag_size TYPE i.
   DATA: lo_data_sample TYPE REF TO data.
-  DATA: lv_json TYPE string.
+  DATA: lv_json    TYPE string,
+        lv_gzip    TYPE xstring,
+        lv_content TYPE string.
 
   ASSIGN i_data->* TO <fs_data_tab>.
 
@@ -40,12 +42,17 @@ FUNCTION Z_XEED_GET_DATA_FRAG_SIZE.
     INSERT <fs_data_line> INTO TABLE <fs_data_sample>.
   ENDLOOP.
 
-  lv_json = /ui2/cl_json=>serialize( data = lo_data_sample compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-camel_case ).
+  lv_json = /ui2/cl_json=>serialize( data = lo_data_sample compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
+  CALL METHOD cl_abap_gzip=>compress_text
+    EXPORTING
+      text_in  = lv_json
+    IMPORTING
+      gzip_out = lv_gzip.
 
-* 1. Tested with MARA, no need to * 2 for Uni-code => Might to be adjusted in the future
+* 1. The final coding will be base64 => so 133% of zipped size => reduce 1024 to 768
 * 2. lv_sample_nb could be lv_sample_nb + 1, however, no need to be so precised
-* 3. Using 750 instead of 1024 to reduce the risk of data overflow
-  lv_frag_size = i_size_limit * 750 / ( strlen( lv_json ) / lv_sample_nb ).
+* 3. Reduce 768 to 512 to reduce the potential overflow
+  lv_frag_size = i_size_limit * 512 / ( xstrlen( lv_gzip ) / lv_sample_nb ).
   IF lv_frag_size >= lv_total_nb.
     RETURN.
   ELSE.

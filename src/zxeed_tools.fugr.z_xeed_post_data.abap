@@ -15,7 +15,8 @@ FUNCTION z_xeed_post_data.
 *"----------------------------------------------------------------------
   DATA: lo_http_client TYPE REF TO if_http_client.
 
-  DATA: lv_sysid       TYPE string,
+  DATA: lv_rfcdest     LIKE i_param-rfcdest,
+        lv_sysid       TYPE string,
         lv_db          TYPE string,
         lv_schema      TYPE string,
         lv_header_type TYPE string,
@@ -24,10 +25,20 @@ FUNCTION z_xeed_post_data.
         lv_age         TYPE string,
         lv_tabname     TYPE string.
 
+* Define to be used RFC destination
+  IF i_param-rfcdest IS NOT INITIAL.
+    lv_rfcdest = i_param-rfcdest.
+  ELSEIF i_param-rfcdest_b IS NOT INITIAL.
+    lv_rfcdest = i_param-rfcdest_b.
+  ELSE.
+    e_status = 0. "No RFC defined, do nothing
+    RETURN.
+  ENDIF.
+
 * Step 1 - HTTP Destination Creation
   cl_http_client=>create_by_destination(
       EXPORTING
-        destination              = i_param-rfcdest
+        destination              = lv_rfcdest
       IMPORTING
         client                   = lo_http_client
         EXCEPTIONS
@@ -42,8 +53,9 @@ FUNCTION z_xeed_post_data.
     RAISE rfc_error.
   ENDIF.
 
-* Step 2 - Request Preparation
+* Step 2 - Request Preparation : Post with Compression Mode
   CALL METHOD lo_http_client->request->set_method( if_http_request=>co_request_method_post ).
+  CALL METHOD lo_http_client->set_compression( if_http_request=>co_compress_in_all_cases ).
 
 * Step 2.1 - Mandatory Headers
   CALL METHOD lo_http_client->request->set_header_field
