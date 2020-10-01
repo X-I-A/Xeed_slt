@@ -18,8 +18,5 @@ Launching the report Z_XEED_OPERATION:
 * Mass Transfer ID: Could be found by transaction LTRS
 * Table Name: Using the multiple selection to do massive operation (range is not supported yet.)
 * HTTP Destination and File Location should be the one of the step Customization
-* Backup HTTP Destination: once the slt flow is saved at filesystem, the system will use this HTTP destination to resend the message. (Not real-time)
 * Source or Result Flag: S = Source and R = Result
 * Max Frag Size: The limitation of HTTP body. Once exceeded, the data will be splitted to several http message.
-## Video Guide
-<To be done>

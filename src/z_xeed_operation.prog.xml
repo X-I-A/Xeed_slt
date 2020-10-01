@@ -61,6 +61,18 @@
     </item>
     <item>
      <ID>I</ID>
+     <KEY>E07</KEY>
+     <ENTRY>Archive path shouldn&apos;t be empty</ENTRY>
+     <LENGTH>72</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>E08</KEY>
+     <ENTRY>All RFC configuration is empty, do nothing</ENTRY>
+     <LENGTH>84</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
      <KEY>S01</KEY>
      <ENTRY>Add Successfully</ENTRY>
      <LENGTH>26</LENGTH>
@@ -188,6 +200,12 @@
      <KEY>P_ADV</KEY>
      <ENTRY>Show Advanced Options</ENTRY>
      <LENGTH>29</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_CUT_FL</KEY>
+     <ENTRY>Cut data flag</ENTRY>
+     <LENGTH>21</LENGTH>
     </item>
     <item>
      <ID>S</ID>

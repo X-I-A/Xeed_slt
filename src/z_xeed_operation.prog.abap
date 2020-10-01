@@ -31,6 +31,7 @@ SELECT-OPTIONS: o_sid FOR zxeed_param-src_sysid NO INTERVALS NO-EXTENSION MODIF 
 SELECT-OPTIONS: o_db FOR zxeed_param-src_db NO INTERVALS NO-EXTENSION MODIF ID adv.
 SELECT-OPTIONS: o_schema FOR zxeed_param-src_schema NO INTERVALS NO-EXTENSION MODIF ID adv.
 SELECT-OPTIONS: o_rfc_b FOR zxeed_param-rfcdest_b NO INTERVALS NO-EXTENSION MODIF ID adv.
+PARAMETERS:     p_cut_fl AS CHECKBOX MODIF ID adv .
 SELECTION-SCREEN END OF BLOCK grp02.
 
 SELECTION-SCREEN BEGIN OF BLOCK grp01 WITH FRAME TITLE TEXT-b01.
@@ -81,8 +82,19 @@ AT SELECTION-SCREEN OUTPUT.
 START-OF-SELECTION.
 * Step 1: Parameter Check of add / update mode
   IF add = 'X' OR upd = 'X'.
-    IF o_mtid-low IS INITIAL or o_tabnam-low IS INITIAL.
+    IF o_mtid-low IS INITIAL OR o_tabnam-low IS INITIAL.
       WRITE 'MT ID or Table Name shouldn''t be empty, do nothing'(e01).
+      RETURN.
+    ENDIF.
+
+    IF o_file-low IS INITIAL.
+      WRITE 'Archive path shouldn''t be empty'(e07).
+      RETURN.
+    ENDIF.
+
+    IF o_rfc_m-low IS INITIAL AND o_rfc_b-low IS INITIAL.
+      WRITE 'All RFC configuration is empty, do nothing'(e08).
+      RETURN.
     ENDIF.
 
     PERFORM check_rfc_connection USING o_rfc_m-low CHANGING gv_rc_code.
@@ -91,6 +103,15 @@ START-OF-SELECTION.
       RETURN.
     ELSEIF gv_rc_code EQ c_rfc_conn_err.
       WRITE 'Main RFC Connection Error, do nothing'(e03).
+      RETURN.
+    ENDIF.
+
+    PERFORM check_rfc_connection USING o_rfc_b-low CHANGING gv_rc_code.
+    IF gv_rc_code EQ c_rfc_def_err.
+      WRITE 'Backup RFC Definition Error, do nothing'(e04).
+      RETURN.
+    ELSEIF gv_rc_code EQ c_rfc_conn_err.
+      WRITE 'Backup RFC Connection Error, do nothing'(e05).
       RETURN.
     ENDIF.
 
@@ -169,7 +190,6 @@ FORM update_param.
   gs_xeed_param-tabname = o_tabnam-low.
   gs_xeed_param-rfcdest = o_rfc_m-low.
   gs_xeed_param-pathintern = o_file-low.
-  gs_xeed_param-rfcdest_b = o_rfc_b-low.
   gs_xeed_param-src_flag = o_srctyp-low.
   gs_xeed_param-frag_size = o_fgsize-low.
   gs_xeed_param-basisversion = o_basis-low.
@@ -177,6 +197,8 @@ FORM update_param.
     gs_xeed_param-src_sysid = o_sid-low.
     gs_xeed_param-src_db = o_db-low.
     gs_xeed_param-src_schema = o_schema-low.
+    gs_xeed_param-rfcdest_b = o_rfc_b-low.
+    gs_xeed_param-cut_data_flag = p_cut_fl.
   ENDIF.
   IF gs_xeed_param-src_sysid IS INITIAL.
     gs_xeed_param-src_sysid = gs_xeed_param-mt_id.
@@ -184,10 +206,14 @@ FORM update_param.
 ENDFORM.
 
 * Internet Connection Check
-FORM check_rfc_connection USING rfc_name TYPE zl2h_param-rfcdest
+FORM check_rfc_connection USING rfc_name TYPE zxeed_param-rfcdest
                        CHANGING r_code TYPE i .
   DATA: lo_http_client TYPE REF TO if_http_client,
         lv_status      TYPE i.
+
+  IF rfc_name IS INITIAL. "No need to check empty value
+    RETURN.
+  ENDIF.
 
   cl_http_client=>create_by_destination(
       EXPORTING
@@ -240,8 +266,12 @@ FORM check_rfc_connection USING rfc_name TYPE zl2h_param-rfcdest
 ENDFORM.
 
 * Path Check
-FORM check_path USING path_name TYPE zl2h_param-pathintern
+FORM check_path USING path_name TYPE zxeed_param-pathintern
              CHANGING r_code TYPE i .
+  IF path_name IS INITIAL. "No need to check empty value
+    RETURN.
+  ENDIF.
+
   CALL FUNCTION 'FILE_GET_NAME_USING_PATH'
     EXPORTING
       logical_path               = path_name

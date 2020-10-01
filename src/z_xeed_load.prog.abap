@@ -49,3 +49,10 @@ CALL FUNCTION 'Z_XEED_COCKPIT'
     i_data    = lo_data
     i_mt_id   = i_p1
     i_tabname = i_p2.
+
+* No transfert to destination
+IF ls_param-cut_data_flag = 'X'.
+  CONCATENATE '<it_r_' i_p2 '>' INTO lv_name.
+  ASSIGN (lv_name) TO <fs_data_src>.
+  CLEAR <fs_data_src>[].
+ENDIF.
