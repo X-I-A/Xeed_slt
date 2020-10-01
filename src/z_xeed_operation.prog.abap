@@ -206,7 +206,7 @@ FORM update_param.
 ENDFORM.
 
 * Internet Connection Check
-FORM check_rfc_connection USING rfc_name TYPE zl2h_param-rfcdest
+FORM check_rfc_connection USING rfc_name TYPE zxeed_param-rfcdest
                        CHANGING r_code TYPE i .
   DATA: lo_http_client TYPE REF TO if_http_client,
         lv_status      TYPE i.
@@ -266,7 +266,7 @@ FORM check_rfc_connection USING rfc_name TYPE zl2h_param-rfcdest
 ENDFORM.
 
 * Path Check
-FORM check_path USING path_name TYPE zl2h_param-pathintern
+FORM check_path USING path_name TYPE zxeed_param-pathintern
              CHANGING r_code TYPE i .
   IF path_name IS INITIAL. "No need to check empty value
     RETURN.
