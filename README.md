@@ -3,7 +3,7 @@
 * Xeed SLT Agent is a plugin of SAP SLT (Landscape Transformation) Server. It can copy the output flow of SLT Server in a [X-I compatible HTTP Flow](https://github.com/X-I-A/X-I-Protocol/blob/main/HTTP_AGENT.md).
 * The output HTTP flow can be caught by other compatible Xeed Agents in order to put the live data streaming into Insight Layer
 * Example: [Http to Pubsub](https://github.com/X-I-A/Xeed_http_pubsub)
-* This plugin is one of the building block of the X-I-A.
+* This plugin is one of the building block of the X-I-A Architecture.
 * Xeed - Insight - Analysis (X-I-A Architecture) is a full scope data solution. Connecting to [my profile @ Linkedin](https://www.linkedin.com/in/xia-chen-soral/) to get the latest update
 ## Quick Start Guide
 ### Installation
