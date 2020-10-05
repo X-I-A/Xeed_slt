@@ -16,14 +16,14 @@ FUNCTION z_xeed_post_data.
   DATA: lo_http_client TYPE REF TO if_http_client.
 
   DATA: lv_rfcdest     LIKE i_param-rfcdest,
-        lv_sysid       TYPE string,
-        lv_db          TYPE string,
-        lv_schema      TYPE string,
-        lv_header_type TYPE string,
-        lv_data_type   TYPE string,
+        lv_table_id    TYPE string,
         lv_seq_no      TYPE string,
+        lv_age_int     TYPE i,
         lv_age         TYPE string,
-        lv_tabname     TYPE string.
+        lv_data_encode TYPE string VALUE 'flat',
+        lv_data_format TYPE string VALUE 'record',
+        lv_data_store  TYPE string VALUE 'body',
+        lv_data_spec   TYPE string.
 
 * Define to be used RFC destination
   IF i_param-rfcdest IS NOT INITIAL.
@@ -57,23 +57,18 @@ FUNCTION z_xeed_post_data.
   CALL METHOD lo_http_client->request->set_method( if_http_request=>co_request_method_post ).
   CALL METHOD lo_http_client->set_compression( if_http_request=>co_compress_in_all_cases ).
 
-* Step 2.1 - Mandatory Headers
+* Step 2.1 - Common Header
   CALL METHOD lo_http_client->request->set_header_field
     EXPORTING
       name  = 'Content-Type'
       value = 'text/plain'.
 
-  MOVE i_param-src_sysid TO lv_sysid.
+* Step 2.2 - Identification
+  CONCATENATE i_param-src_sysid i_param-src_db i_param-src_schema i_param-tabname INTO lv_table_id SEPARATED BY '.'.
   CALL METHOD lo_http_client->request->set_header_field
     EXPORTING
-      name  = 'XEED-SYSID'
-      value = lv_sysid.
-
-  MOVE i_param-tabname TO lv_tabname.
-  CALL METHOD lo_http_client->request->set_header_field
-    EXPORTING
-      name  = 'XEED-TABNAME'
-      value = lv_tabname.
+      name  = 'XEED-TABLE-ID'
+      value = lv_table_id.
 
   MOVE i_seq_no TO lv_seq_no.
   CALL METHOD lo_http_client->request->set_header_field
@@ -81,43 +76,39 @@ FUNCTION z_xeed_post_data.
       name  = 'XEED-START-SEQ'
       value = lv_seq_no.
 
-  MOVE i_age TO lv_age.
+  MOVE i_age TO lv_age_int.
+  MOVE lv_age_int TO lv_age.
   CALL METHOD lo_http_client->request->set_header_field
     EXPORTING
       name  = 'XEED-AGE'
       value = lv_age.
 
-* Step 2.2 - Conditional Headers
-  IF i_age = 1. " Header
-    MOVE 'DDIC' TO lv_header_type.
-    CALL METHOD lo_http_client->request->set_header_field
-      EXPORTING
-        name  = 'XEED-HEADER-TYPE'
-        value = lv_header_type.
+* Step 2.3 - Data Description
+  CALL METHOD lo_http_client->request->set_header_field
+    EXPORTING
+      name  = 'XEED-DATA-ENCODE'
+      value = lv_data_encode.
+
+  CALL METHOD lo_http_client->request->set_header_field
+    EXPORTING
+      name  = 'XEED-DATA-FORMAT'
+      value = lv_data_format.
+
+  CALL METHOD lo_http_client->request->set_header_field
+    EXPORTING
+      name  = 'XEED-DATA-STORE'
+      value = lv_data_store.
+
+* Step 2.4 - Conditional Headers
+  IF i_age = 1. "Header Type
+    MOVE 'ddic' TO lv_data_spec.
   ELSE. " Data
-    MOVE 'SLT' TO lv_data_type.
-    CALL METHOD lo_http_client->request->set_header_field
-      EXPORTING
-        name  = 'XEED-DATA-TYPE'
-        value = lv_data_type.
+    MOVE 'slt' TO lv_data_spec.
   ENDIF.
-
-* Step 2.3 - Optional Headers
-  IF i_param-src_db IS NOT INITIAL.
-    MOVE i_param-src_db TO lv_db.
-    CALL METHOD lo_http_client->request->set_header_field
-      EXPORTING
-        name  = 'XEED-DB'
-        value = lv_db.
-  ENDIF.
-
-  IF i_param-src_schema IS NOT INITIAL.
-    MOVE i_param-src_schema TO lv_schema.
-    CALL METHOD lo_http_client->request->set_header_field
-      EXPORTING
-        name  = 'XEED-SCHEMA'
-        value = lv_schema.
-  ENDIF.
+  CALL METHOD lo_http_client->request->set_header_field
+    EXPORTING
+      name  = 'XEED-DATA-SPEC'
+      value = lv_data_spec.
 
   lo_http_client->request->set_cdata( i_content ).
 

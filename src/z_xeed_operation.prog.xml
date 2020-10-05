@@ -73,6 +73,12 @@
     </item>
     <item>
      <ID>I</ID>
+     <KEY>E09</KEY>
+     <ENTRY>Max Frag Size is 1000, do nothing</ENTRY>
+     <LENGTH>66</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
      <KEY>S01</KEY>
      <ENTRY>Add Successfully</ENTRY>
      <LENGTH>26</LENGTH>
