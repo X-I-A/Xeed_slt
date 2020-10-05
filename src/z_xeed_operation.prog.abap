@@ -1,7 +1,10 @@
 *&---------------------------------------------------------------------*
 *& Report Z_XEED_OPERATION
 *&---------------------------------------------------------------------*
-*&
+*& Auther : X-I-A
+*& Date : 2020.10.05
+*& License : GPL-3.0
+*& Repository: https://github.com/X-I-A/Xeed_slt
 *&---------------------------------------------------------------------*
 REPORT z_xeed_operation.
 
@@ -94,6 +97,11 @@ START-OF-SELECTION.
 
     IF o_rfc_m-low IS INITIAL AND o_rfc_b-low IS INITIAL.
       WRITE 'All RFC configuration is empty, do nothing'(e08).
+      RETURN.
+    ENDIF.
+
+    IF o_fgsize-low > 1000.
+      WRITE 'Max Frag Size is 1000, do nothing'(e09).
       RETURN.
     ENDIF.
 

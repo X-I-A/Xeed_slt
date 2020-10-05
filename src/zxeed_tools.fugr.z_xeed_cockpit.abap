@@ -30,45 +30,10 @@ FUNCTION z_xeed_cockpit.
   DATA: lv_frag_size  TYPE i,
         lv_size_limit TYPE i.
 
-  DATA:
-    BEGIN OF ls_iniload,
-      sysid       TYPE zxeed_d_source_name,
-      db          TYPE zxeed_d_src_db_name,
-      schema      TYPE zxeed_d_src_schema_name,
-      tabname     TYPE tabname,
-      header_type TYPE char20 VALUE 'DDIC',
-      start_seq   TYPE char20,
-      age         TYPE numc10 VALUE 1,
-      header      LIKE lt_header,
-    END OF ls_iniload.
-
-  DATA:
-    BEGIN OF ls_output,
-      sysid       TYPE zxeed_d_source_name,
-      db          TYPE zxeed_d_src_db_name,
-      schema      TYPE zxeed_d_src_schema_name,
-      tabname     TYPE tabname,
-      data_type   TYPE char20 VALUE 'SLT',
-      start_seq   TYPE char20,
-      age         TYPE numc10 VALUE 1,
-      data        TYPE REF TO data,
-    END OF ls_output.
-
-* Get Parameters:
+* Get DATA / Parameters:
   IF i_param IS INITIAL.
     RETURN. " Something goes wrong and no need to continue
   ENDIF.
-
-* Data Initialization
-  ls_iniload-sysid   = i_param-src_sysid.
-  ls_iniload-db      = i_param-src_db.
-  ls_iniload-schema  = i_param-src_schema.
-  ls_iniload-tabname = i_param-tabname.
-
-  ls_output-sysid   = i_param-src_sysid.
-  ls_output-db      = i_param-src_db.
-  ls_output-schema  = i_param-src_schema.
-  ls_output-tabname = i_param-tabname.
   ASSIGN i_data->* TO <fs_data_tab>.
 
 * Function 1: Initial Load Check
@@ -101,15 +66,13 @@ FUNCTION z_xeed_cockpit.
 
 * Only Post the fulfilled results
     IF lt_header IS NOT INITIAL.
-      ls_iniload-start_seq = lv_seq_no.
-      ls_iniload-header[]  = lt_header[].
-      lv_iniload_json = /ui2/cl_json=>serialize( data = ls_iniload compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
+      lv_iniload_json = /ui2/cl_json=>serialize( data = lt_header[] compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
 
       CALL FUNCTION 'Z_XEED_SEND_DATA'
         EXPORTING
           i_content        = lv_iniload_json
           i_seq_no         = lv_seq_no
-          i_age            = ls_iniload-age
+          i_age            = 1
           i_param          = i_param
         EXCEPTIONS
           rfc_error        = 1
@@ -128,7 +91,6 @@ FUNCTION z_xeed_cockpit.
                      AND tabname     = i_tabname.
   ENDIF.
   lv_seq_no = ls_dashboard-start_seq.
-  ls_output-start_seq = lv_seq_no.
 
 * Function 2 : Split and Send Body Message
 * Check if frag is necessary
@@ -142,15 +104,13 @@ FUNCTION z_xeed_cockpit.
 
   IF lv_frag_size IS INITIAL. "No need to frag
     ADD 1 TO ls_dashboard-current_age.
-    ls_output-age = ls_dashboard-current_age.
-    ls_output-data ?= i_data.
-    lv_body_json = /ui2/cl_json=>serialize( data = ls_output compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
+    lv_body_json = /ui2/cl_json=>serialize( data = i_data compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
 * Send Data
     CALL FUNCTION 'Z_XEED_SEND_DATA'
       EXPORTING
         i_content = lv_body_json
         i_seq_no  = lv_seq_no
-        i_age     = ls_output-age
+        i_age     = ls_dashboard-current_age
         i_param   = i_param.
   ELSE. "Frag
     CREATE DATA lo_data_frag LIKE <fs_data_tab>.
@@ -160,15 +120,13 @@ FUNCTION z_xeed_cockpit.
       INSERT <fs_data_line> INTO TABLE <fs_data_frag>.
       IF sy-tabix MOD lv_frag_size EQ 0.
         ADD 1 TO ls_dashboard-current_age.
-        ls_output-age = ls_dashboard-current_age.
-        ls_output-data ?= lo_data_frag.
-        lv_body_json = /ui2/cl_json=>serialize( data = ls_output compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
+        lv_body_json = /ui2/cl_json=>serialize( data = lo_data_frag compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
 * Send Data
         CALL FUNCTION 'Z_XEED_SEND_DATA'
           EXPORTING
             i_content = lv_body_json
             i_seq_no  = lv_seq_no
-            i_age     = ls_output-age
+            i_age     = ls_dashboard-current_age
             i_param   = i_param.
         CLEAR: <fs_data_frag>[], lv_body_json.
       ENDIF.
@@ -176,15 +134,13 @@ FUNCTION z_xeed_cockpit.
 * The case for the last data
     IF <fs_data_frag> IS NOT INITIAL.
       ADD 1 TO ls_dashboard-current_age.
-      ls_output-age = ls_dashboard-current_age.
-      ls_output-data ?= lo_data_frag.
-      lv_body_json = /ui2/cl_json=>serialize( data = ls_output compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
+      lv_body_json = /ui2/cl_json=>serialize( data = lo_data_frag compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
 * Send Data
       CALL FUNCTION 'Z_XEED_SEND_DATA'
         EXPORTING
           i_content = lv_body_json
           i_seq_no  = lv_seq_no
-          i_age     = ls_output-age
+          i_age     = ls_dashboard-current_age
           i_param   = i_param.
     ENDIF.
   ENDIF.
