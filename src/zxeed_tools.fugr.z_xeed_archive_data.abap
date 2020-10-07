@@ -10,7 +10,8 @@ FUNCTION z_xeed_archive_data.
 *"      PATH_ERROR
 *"----------------------------------------------------------------------
   DATA: lv_filename   TYPE c LENGTH 255,
-        lv_fname_json TYPE c LENGTH 255.
+        lv_fname_json TYPE c LENGTH 255,
+        lv_header TYPE string.
 
 * WRITE TO FILE - Max 32 Characters
   CONCATENATE i_seq_no '-' i_age INTO lv_filename.
@@ -31,7 +32,9 @@ FUNCTION z_xeed_archive_data.
     RAISE path_error.
   ENDIF.
 
+  lv_header = /ui2/cl_json=>serialize( data = i_param compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
   OPEN DATASET lv_fname_json FOR OUTPUT IN TEXT MODE ENCODING DEFAULT.
+  TRANSFER lv_header TO lv_fname_json.
   TRANSFER i_content TO lv_fname_json.
   CLOSE DATASET lv_fname_json.
 

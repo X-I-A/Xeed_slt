@@ -3,7 +3,7 @@
 *&---------------------------------------------------------------------*
 *&
 *&---------------------------------------------------------------------*
-REPORT Z_XEED_RESEND.
+REPORT z_xeed_resend.
 
 CONSTANTS: dummy TYPE text20 VALUE 'dummy.txt'.
 
@@ -18,36 +18,13 @@ DATA: lv_seqno TYPE char20,
 DATA: lt_file     TYPE TABLE OF  salfldir,
       ls_file     LIKE LINE OF lt_file,
       lv_filename TYPE c LENGTH 255,
-      lv_json     TYPE string.
+      lv_header   TYPE string,
+      lv_body     TYPE string.
 
 DATA: ls_param  TYPE zxeed_param,
       lv_status TYPE i.
 
-DATA:
-  BEGIN OF ls_iniload,
-    sysid       TYPE zxeed_d_source_name,
-    db          TYPE zxeed_d_src_db_name,
-    schema      TYPE zxeed_d_src_schema_name,
-    tabname     TYPE tabname,
-    header_type TYPE char20 VALUE 'DDIC',
-    start_seq   TYPE char20,
-    age         TYPE numc10 VALUE 1,
-    header      TYPE ddfields,
-  END OF ls_iniload.
-
-DATA:
-  BEGIN OF ls_output,
-    sysid     TYPE zxeed_d_source_name,
-    db        TYPE zxeed_d_src_db_name,
-    schema    TYPE zxeed_d_src_schema_name,
-    tabname   TYPE tabname,
-    data_type TYPE char20 VALUE 'SLT',
-    start_seq TYPE char20,
-    age       TYPE numc10 VALUE 1,
-    data      TYPE REF TO data,
-  END OF ls_output.
-
-
+* Get All Possible Archive Location
 SELECT DISTINCT pathintern FROM zxeed_param
   INTO TABLE lt_path_log.
 LOOP AT lt_path_log INTO lv_path_log.
@@ -91,58 +68,26 @@ LOOP AT lt_path_log INTO lv_path_log.
       MOVE ls_file-name+0(20) TO lv_seqno.
       MOVE ls_file-name+21(10) TO lv_age.
       OPEN DATASET lv_filename FOR INPUT IN TEXT MODE ENCODING DEFAULT.
-      READ DATASET lv_filename INTO lv_json.
-      CLEAR: ls_iniload, ls_output, lv_status, ls_param.
-      IF lv_age = 1.
-        /ui2/cl_json=>deserialize( EXPORTING json = lv_json pretty_name = /ui2/cl_json=>pretty_mode-none CHANGING data = ls_iniload ).
-        SELECT SINGLE * FROM zxeed_param
-          INTO CORRESPONDING FIELDS OF ls_param
-         WHERE src_sysid = ls_iniload-sysid
-           AND tabname = ls_iniload-tabname
-           AND src_db = ls_iniload-db
-           AND src_schema = ls_iniload-schema.
-* Re-Post Data Try
-        CALL FUNCTION 'Z_XEED_POST_DATA'
-          EXPORTING
-            i_param          = ls_param
-            i_content        = lv_json
-            i_seq_no         = ls_iniload-start_seq
-            i_age            = ls_iniload-age
-          IMPORTING
-            e_status         = lv_status
-          EXCEPTIONS
-            rfc_error        = 1
-            connection_error = 2
-            OTHERS           = 3.
-        IF sy-subrc IS NOT INITIAL.
-          CLEAR lv_status.
-          CONTINUE. " Donothing
-        ENDIF.
-      ELSE.
-        /ui2/cl_json=>deserialize( EXPORTING json = lv_json pretty_name = /ui2/cl_json=>pretty_mode-none CHANGING data = ls_output ).
-        SELECT SINGLE * FROM zxeed_param
-          INTO CORRESPONDING FIELDS OF ls_param
-         WHERE src_sysid = ls_output-sysid
-           AND tabname = ls_output-tabname
-           AND src_db = ls_output-db
-           AND src_schema = ls_output-schema.
-* Re-Post Data Try
-        CALL FUNCTION 'Z_XEED_POST_DATA'
-          EXPORTING
-            i_param          = ls_param
-            i_content        = lv_json
-            i_seq_no         = ls_output-start_seq
-            i_age            = ls_output-age
-          IMPORTING
-            e_status         = lv_status
-          EXCEPTIONS
-            rfc_error        = 1
-            connection_error = 2
-            OTHERS           = 3.
-        IF sy-subrc IS NOT INITIAL.
-          CLEAR lv_status.
-          CONTINUE. " Donothing
-        ENDIF.
+      READ DATASET lv_filename INTO lv_header.
+      READ DATASET lv_filename INTO lv_body.
+      CLEAR: lv_status, ls_param.
+      /ui2/cl_json=>deserialize( EXPORTING json = lv_header pretty_name = /ui2/cl_json=>pretty_mode-none CHANGING data = ls_param ).
+      CALL FUNCTION 'Z_XEED_POST_DATA'
+        EXPORTING
+          i_param          = ls_param
+          i_content        = lv_body
+          i_seq_no         = lv_seqno
+          i_age            = lv_age
+        IMPORTING
+          e_status         = lv_status
+        EXCEPTIONS
+          rfc_error        = 1
+          connection_error = 2
+          OTHERS           = 3.
+      IF sy-subrc IS NOT INITIAL.
+        CLEAR lv_status.
+        CLOSE DATASET lv_filename.
+        CONTINUE. " Donothing
       ENDIF.
       CLOSE DATASET lv_filename.
       IF lv_status = 200. " Post OK this time
