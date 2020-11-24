@@ -83,6 +83,11 @@ FUNCTION z_xeed_post_data.
       name  = 'XEED-AGE'
       value = lv_age.
 
+  CALL METHOD lo_http_client->request->set_header_field
+    EXPORTING
+      name  = 'XEED-AGED'
+      value = 'True'.
+
 * Step 2.3 - Data Description
   CALL METHOD lo_http_client->request->set_header_field
     EXPORTING
