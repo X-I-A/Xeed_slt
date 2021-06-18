@@ -59,40 +59,40 @@ LOOP AT lt_path_log INTO lv_path_log.
   IF sy-subrc <> 0.
     CONTINUE.
   ENDIF.
-* Get File with the correct format: <seq>-<age>-<mt-id>-<tabname>.json
+* Get File with the correct format: <seq>-<age>
   LOOP AT lt_file INTO ls_file WHERE name CP '*-*'.
     IF ls_file-name+20(1) = '-' AND strlen( ls_file-name ) = 31
      AND ls_file-name+0(20) CO '0123456789'
      AND ls_file-name+21(10) CO '0123456789'.
       CONCATENATE lv_path_phy ls_file-name INTO lv_filename.
-      MOVE ls_file-name+0(20) TO lv_seqno.
-      MOVE ls_file-name+21(10) TO lv_age.
-      OPEN DATASET lv_filename FOR INPUT IN TEXT MODE ENCODING DEFAULT.
-      READ DATASET lv_filename INTO lv_header.
-      READ DATASET lv_filename INTO lv_body.
-      CLEAR: lv_status, ls_param.
-      /ui2/cl_json=>deserialize( EXPORTING json = lv_header pretty_name = /ui2/cl_json=>pretty_mode-none CHANGING data = ls_param ).
-      CALL FUNCTION 'Z_XEED_POST_DATA'
-        EXPORTING
-          i_param          = ls_param
-          i_content        = lv_body
-          i_seq_no         = lv_seqno
-          i_age            = lv_age
-        IMPORTING
-          e_status         = lv_status
-        EXCEPTIONS
-          rfc_error        = 1
-          connection_error = 2
-          OTHERS           = 3.
-      IF sy-subrc IS NOT INITIAL.
-        CLEAR lv_status.
-        CLOSE DATASET lv_filename.
-        CONTINUE. " Donothing
-      ENDIF.
-      CLOSE DATASET lv_filename.
-      IF lv_status = 200. " Post OK this time
-        DELETE DATASET lv_filename.
-      ENDIF.
+*      MOVE ls_file-name+0(20) TO lv_seqno.
+*      MOVE ls_file-name+21(10) TO lv_age.
+*      OPEN DATASET lv_filename FOR INPUT IN TEXT MODE ENCODING DEFAULT.
+*      READ DATASET lv_filename INTO lv_header.
+*      READ DATASET lv_filename INTO lv_body.
+*      CLEAR: lv_status, ls_param.
+*      /ui2/cl_json=>deserialize( EXPORTING json = lv_header pretty_name = /ui2/cl_json=>pretty_mode-none CHANGING data = ls_param ).
+*      CALL FUNCTION 'Z_XEED_POST_DATA'
+*        EXPORTING
+*          i_param          = ls_param
+*          i_content        = lv_body
+*          i_seq_no         = lv_seqno
+*          i_age            = lv_age
+*        IMPORTING
+*          e_status         = lv_status
+*        EXCEPTIONS
+*          rfc_error        = 1
+*          connection_error = 2
+*          OTHERS           = 3.
+*      IF sy-subrc IS NOT INITIAL.
+*        CLEAR lv_status.
+*        CLOSE DATASET lv_filename.
+*        CONTINUE. " Donothing
+*      ENDIF.
+*      CLOSE DATASET lv_filename.
+*      IF lv_status = 200. " Post OK this time
+*        DELETE DATASET lv_filename.
+*      ENDIF.
     ENDIF.
   ENDLOOP.
 ENDLOOP.

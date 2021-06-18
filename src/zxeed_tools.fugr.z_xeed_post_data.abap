@@ -2,10 +2,10 @@ FUNCTION z_xeed_post_data.
 *"----------------------------------------------------------------------
 *"*"Local Interface:
 *"  IMPORTING
-*"     VALUE(I_CONTENT) TYPE  STRING
+*"     VALUE(I_CONTENT) TYPE  XSTRING
+*"     VALUE(I_PARAM) TYPE  ZXEED_PARAM
 *"     VALUE(I_SEQ_NO) TYPE  CHAR20
 *"     VALUE(I_AGE) TYPE  NUMC10
-*"     VALUE(I_PARAM) TYPE  ZXEED_PARAM
 *"  EXPORTING
 *"     VALUE(E_STATUS) TYPE  I
 *"     VALUE(E_RESPONSE) TYPE  STRING
@@ -16,14 +16,9 @@ FUNCTION z_xeed_post_data.
   DATA: lo_http_client TYPE REF TO if_http_client.
 
   DATA: lv_rfcdest     LIKE i_param-rfcdest,
-        lv_table_id    TYPE string,
         lv_seq_no      TYPE string,
-        lv_age_int     TYPE i,
         lv_age         TYPE string,
-        lv_data_encode TYPE string VALUE 'flat',
-        lv_data_format TYPE string VALUE 'record',
-        lv_data_store  TYPE string VALUE 'body',
-        lv_data_spec   TYPE string.
+        lv_table_id    TYPE string.
 
 * Define to be used RFC destination
   IF i_param-rfcdest IS NOT INITIAL.
@@ -61,9 +56,9 @@ FUNCTION z_xeed_post_data.
   CALL METHOD lo_http_client->request->set_header_field
     EXPORTING
       name  = 'Content-Type'
-      value = 'text/plain'.
+      value = 'multipart/form-data'.
 
-* Step 2.2 - Identification
+* Step 2.2 - Table Identification
   CONCATENATE i_param-src_sysid i_param-src_db i_param-src_schema i_param-tabname INTO lv_table_id SEPARATED BY '.'.
   CALL METHOD lo_http_client->request->set_header_field
     EXPORTING
@@ -73,49 +68,16 @@ FUNCTION z_xeed_post_data.
   MOVE i_seq_no TO lv_seq_no.
   CALL METHOD lo_http_client->request->set_header_field
     EXPORTING
-      name  = 'XEED-START-SEQ'
+      name  = 'XEED-SEQ-NO'
       value = lv_seq_no.
 
-  MOVE i_age TO lv_age_int.
-  MOVE lv_age_int TO lv_age.
+  MOVE i_age TO lv_age.
   CALL METHOD lo_http_client->request->set_header_field
     EXPORTING
       name  = 'XEED-AGE'
       value = lv_age.
 
-  CALL METHOD lo_http_client->request->set_header_field
-    EXPORTING
-      name  = 'XEED-AGED'
-      value = 'True'.
-
-* Step 2.3 - Data Description
-  CALL METHOD lo_http_client->request->set_header_field
-    EXPORTING
-      name  = 'XEED-DATA-ENCODE'
-      value = lv_data_encode.
-
-  CALL METHOD lo_http_client->request->set_header_field
-    EXPORTING
-      name  = 'XEED-DATA-FORMAT'
-      value = lv_data_format.
-
-  CALL METHOD lo_http_client->request->set_header_field
-    EXPORTING
-      name  = 'XEED-DATA-STORE'
-      value = lv_data_store.
-
-* Step 2.4 - Conditional Headers
-  IF i_age = 1. "Header Type
-    MOVE 'ddic' TO lv_data_spec.
-  ELSE. " Data
-    MOVE 'slt' TO lv_data_spec.
-  ENDIF.
-  CALL METHOD lo_http_client->request->set_header_field
-    EXPORTING
-      name  = 'XEED-DATA-SPEC'
-      value = lv_data_spec.
-
-  lo_http_client->request->set_cdata( i_content ).
+  lo_http_client->request->set_data( i_content ).
 
 * Step 3 - Sent Request
   CALL METHOD lo_http_client->send

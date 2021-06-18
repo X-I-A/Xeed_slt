@@ -9,9 +9,7 @@ FUNCTION z_xeed_cockpit.
 *"----------------------------------------------------------------------
 
 * Functions:
-* 1. If it is an initial load, send header descriptor
-* 2. Data Message Split
-* 3. If Post Failed, Save a copy for a future retry (FM SEND_DATA)
+* Concentration at data sending
 
   FIELD-SYMBOLS: <fs_operate_flag> TYPE iuuc_operation,
                  <fs_data_tab>     TYPE ANY TABLE,
@@ -23,17 +21,17 @@ FUNCTION z_xeed_cockpit.
         lv_seq_no       TYPE char20,
         ls_dashboard    TYPE zxeed_dashboard,
         lt_header       TYPE ddfields,
-        lv_iniload_json TYPE string,
-        lv_body_json    TYPE string.
+        lo_header_data  TYPE REF TO data,
+        lo_iniload_data TYPE REF TO data,
+        lx_iniload_json TYPE xstring,
+        lx_body_json    TYPE xstring.
 
-  DATA: lo_data_frag   TYPE REF TO data.
-  DATA: lv_frag_size  TYPE i,
-        lv_size_limit TYPE i.
 
 * Get DATA / Parameters:
   IF i_param IS INITIAL.
     RETURN. " Something goes wrong and no need to continue
   ENDIF.
+
   ASSIGN i_data->* TO <fs_data_tab>.
 
 * Function 1: Initial Load Check
@@ -66,11 +64,19 @@ FUNCTION z_xeed_cockpit.
 
 * Only Post the fulfilled results
     IF lt_header IS NOT INITIAL.
-      lv_iniload_json = /ui2/cl_json=>serialize( data = lt_header[] compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
+      GET REFERENCE OF lt_header INTO lo_iniload_data.
+      GET REFERENCE OF ls_dashboard INTO lo_header_data.
+
+      CALL FUNCTION 'Z_XEED_JSON_CONV'
+        EXPORTING
+          i_header   = lo_header_data
+          i_data     = lo_iniload_data
+        IMPORTING
+          e_xcontent = lx_iniload_json.
 
       CALL FUNCTION 'Z_XEED_SEND_DATA'
         EXPORTING
-          i_content        = lv_iniload_json
+          i_content        = lx_iniload_json
           i_seq_no         = lv_seq_no
           i_age            = 1
           i_param          = i_param
@@ -92,58 +98,32 @@ FUNCTION z_xeed_cockpit.
   ENDIF.
   lv_seq_no = ls_dashboard-start_seq.
 
-* Function 2 : Split and Send Body Message
-* Check if frag is necessary
-  MOVE i_param-frag_size TO lv_size_limit.
-  CALL FUNCTION 'Z_XEED_GET_DATA_FRAG_SIZE'
+  CALL FUNCTION 'NUMBER_GET_NEXT'
     EXPORTING
-      i_data       = i_data
-      i_size_limit = lv_size_limit
+      nr_range_nr = '01'
+      object      = 'ZSLT000001'
     IMPORTING
-      e_frag_size  = lv_frag_size.
-
-  IF lv_frag_size IS INITIAL. "No need to frag
-    ADD 1 TO ls_dashboard-current_age.
-    lv_body_json = /ui2/cl_json=>serialize( data = i_data compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
-* Send Data
-    CALL FUNCTION 'Z_XEED_SEND_DATA'
-      EXPORTING
-        i_content = lv_body_json
-        i_seq_no  = lv_seq_no
-        i_age     = ls_dashboard-current_age
-        i_param   = i_param.
-  ELSE. "Frag
-    CREATE DATA lo_data_frag LIKE <fs_data_tab>.
-    ASSIGN lo_data_frag->* TO <fs_data_frag>.
-
-    LOOP AT <fs_data_tab> ASSIGNING <fs_data_line>.
-      INSERT <fs_data_line> INTO TABLE <fs_data_frag>.
-      IF sy-tabix MOD lv_frag_size EQ 0.
-        ADD 1 TO ls_dashboard-current_age.
-        lv_body_json = /ui2/cl_json=>serialize( data = lo_data_frag compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
-* Send Data
-        CALL FUNCTION 'Z_XEED_SEND_DATA'
-          EXPORTING
-            i_content = lv_body_json
-            i_seq_no  = lv_seq_no
-            i_age     = ls_dashboard-current_age
-            i_param   = i_param.
-        CLEAR: <fs_data_frag>[], lv_body_json.
-      ENDIF.
-    ENDLOOP.
-* The case for the last data
-    IF <fs_data_frag> IS NOT INITIAL.
-      ADD 1 TO ls_dashboard-current_age.
-      lv_body_json = /ui2/cl_json=>serialize( data = lo_data_frag compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
-* Send Data
-      CALL FUNCTION 'Z_XEED_SEND_DATA'
-        EXPORTING
-          i_content = lv_body_json
-          i_seq_no  = lv_seq_no
-          i_age     = ls_dashboard-current_age
-          i_param   = i_param.
-    ENDIF.
+      number      = ls_dashboard-current_age.
+  IF sy-subrc <> 0.
+* Implement suitable error handling here
   ENDIF.
+
+  GET REFERENCE OF ls_dashboard INTO lo_header_data.
+
+  CALL FUNCTION 'Z_XEED_JSON_CONV'
+    EXPORTING
+      i_header  = lo_header_data
+      i_data    = i_data
+    IMPORTING
+      e_content = lx_body_json.
+
+* Send Data
+  CALL FUNCTION 'Z_XEED_SEND_DATA'
+    EXPORTING
+      i_content = lx_body_json
+      i_seq_no  = lv_seq_no
+      i_age     = ls_dashboard-current_age
+      i_param   = i_param.
 
   MODIFY zxeed_dashboard FROM ls_dashboard.
 

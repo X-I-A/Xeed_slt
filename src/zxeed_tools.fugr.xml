@@ -15,7 +15,7 @@
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_CONTENT</PARAMETER>
-       <TYP>STRING</TYP>
+       <TYP>XSTRING</TYP>
       </RSIMP>
       <RSIMP>
        <PARAMETER>I_SEQ_NO</PARAMETER>
@@ -113,47 +113,6 @@
      </DOCUMENTATION>
     </item>
     <item>
-     <FUNCNAME>Z_XEED_GET_DATA_FRAG_SIZE</FUNCNAME>
-     <SHORT_TEXT>Get Data Frag Size</SHORT_TEXT>
-     <IMPORT>
-      <RSIMP>
-       <PARAMETER>I_DATA</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>REF TO DATA</TYP>
-       <REF_CLASS>X</REF_CLASS>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>I_SIZE_LIMIT</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>I</TYP>
-      </RSIMP>
-     </IMPORT>
-     <EXPORT>
-      <RSEXP>
-       <PARAMETER>E_FRAG_SIZE</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>I</TYP>
-      </RSEXP>
-     </EXPORT>
-     <DOCUMENTATION>
-      <RSFDO>
-       <PARAMETER>I_DATA</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Input Data</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>I_SIZE_LIMIT</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Size Limit (KBytes)</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>E_FRAG_SIZE</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Size (line numer)</STEXT>
-      </RSFDO>
-     </DOCUMENTATION>
-    </item>
-    <item>
      <FUNCNAME>Z_XEED_GET_INILOAD</FUNCNAME>
      <SHORT_TEXT>Get initial load related information</SHORT_TEXT>
      <IMPORT>
@@ -224,13 +183,57 @@
      </DOCUMENTATION>
     </item>
     <item>
+     <FUNCNAME>Z_XEED_JSON_CONV</FUNCNAME>
+     <SHORT_TEXT>Json Conversion</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_HEADER</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_DATA</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>E_CONTENT</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>XSTRING</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_HEADER</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_DATA</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_CONTENT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>JSON Content</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
      <FUNCNAME>Z_XEED_POST_DATA</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
      <SHORT_TEXT>Post SLT Data To Configured Destination</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_CONTENT</PARAMETER>
-       <TYP>STRING</TYP>
+       <TYP>XSTRING</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_PARAM</PARAMETER>
+       <TYP>ZXEED_PARAM</TYP>
       </RSIMP>
       <RSIMP>
        <PARAMETER>I_SEQ_NO</PARAMETER>
@@ -239,10 +242,6 @@
       <RSIMP>
        <PARAMETER>I_AGE</PARAMETER>
        <TYP>NUMC10</TYP>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>I_PARAM</PARAMETER>
-       <TYP>ZXEED_PARAM</TYP>
       </RSIMP>
      </IMPORT>
      <EXPORT>
@@ -270,6 +269,11 @@
        <STEXT>Plein Text Content String</STEXT>
       </RSFDO>
       <RSFDO>
+       <PARAMETER>I_PARAM</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>SLT 2 HTTP Parameter Table</STEXT>
+      </RSFDO>
+      <RSFDO>
        <PARAMETER>I_SEQ_NO</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Sequence Number</STEXT>
@@ -278,11 +282,6 @@
        <PARAMETER>I_AGE</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Age Number</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>I_PARAM</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>SLT 2 HTTP Parameter Table</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_STATUS</PARAMETER>
@@ -313,7 +312,7 @@
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_CONTENT</PARAMETER>
-       <TYP>STRING</TYP>
+       <TYP>XSTRING</TYP>
       </RSIMP>
       <RSIMP>
        <PARAMETER>I_SEQ_NO</PARAMETER>
