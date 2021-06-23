@@ -1,11 +1,11 @@
-FUNCTION Z_XEED_POST_DATA.
+FUNCTION Z_XEED_DATA_POST.
 *"----------------------------------------------------------------------
 *"*"Local Interface:
 *"  IMPORTING
 *"     VALUE(I_CONTENT) TYPE  XSTRING
-*"     VALUE(I_PARAM) TYPE  ZXEED_PARAM
-*"     VALUE(I_SEQ_NO) TYPE  CHAR20
+*"     VALUE(I_SETTINGS) TYPE  ZXEED_SETTINGS
 *"     VALUE(I_AGE) TYPE  NUMC10
+*"     VALUE(I_OPERATE) TYPE  ZXEED_D_OPERATE
 *"  EXPORTING
 *"     VALUE(E_STATUS) TYPE  I
 *"     VALUE(E_RESPONSE) TYPE  STRING
@@ -15,16 +15,17 @@ FUNCTION Z_XEED_POST_DATA.
 *"----------------------------------------------------------------------
   DATA: lo_http_client TYPE REF TO if_http_client.
 
-  DATA: lv_rfcdest  LIKE i_param-rfcdest,
+  DATA: lv_rfcdest  LIKE i_settings-rfcdest,
         lv_seq_no   TYPE string,
         lv_age      TYPE string,
+        lv_operate  TYPE string,
         lv_table_id TYPE string.
 
 * Define to be used RFC destination
-  IF i_param-rfcdest IS NOT INITIAL.
-    lv_rfcdest = i_param-rfcdest.
-  ELSEIF i_param-rfcdest_b IS NOT INITIAL.
-    lv_rfcdest = i_param-rfcdest_b.
+  IF i_settings-rfcdest IS NOT INITIAL.
+    lv_rfcdest = i_settings-rfcdest.
+  ELSEIF i_settings-rfcdest_b IS NOT INITIAL.
+    lv_rfcdest = i_settings-rfcdest_b.
   ELSE.
     e_status = 0. "No RFC defined, do nothing
     RETURN.
@@ -59,13 +60,13 @@ FUNCTION Z_XEED_POST_DATA.
       value = 'application/octet-stream'.
 
 * Step 2.2 - Table Identification
-  CONCATENATE i_param-src_sysid i_param-src_db i_param-src_schema i_param-tabname INTO lv_table_id SEPARATED BY '.'.
+  CONCATENATE i_settings-src_sysid i_settings-src_db i_settings-src_schema i_settings-tabname INTO lv_table_id SEPARATED BY '.'.
   CALL METHOD lo_http_client->request->set_header_field
     EXPORTING
       name  = 'XEED-TABLE-ID'
       value = lv_table_id.
 
-  MOVE i_seq_no TO lv_seq_no.
+  MOVE i_settings-start_seq TO lv_seq_no.
   CALL METHOD lo_http_client->request->set_header_field
     EXPORTING
       name  = 'XEED-SEQ-NO'
@@ -76,6 +77,12 @@ FUNCTION Z_XEED_POST_DATA.
     EXPORTING
       name  = 'XEED-AGE'
       value = lv_age.
+
+  MOVE i_operate TO lv_operate.
+  CALL METHOD lo_http_client->request->set_header_field
+    EXPORTING
+      name  = 'XEED-OPERATE'
+      value = lv_operate.
 
   lo_http_client->request->set_data( data = i_content length = xstrlen( i_content ) ).
 

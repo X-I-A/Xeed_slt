@@ -18,6 +18,9 @@ DATA: lv_seqno TYPE char20,
 DATA: lt_file     TYPE TABLE OF  salfldir,
       ls_file     LIKE LINE OF lt_file,
       lv_filename TYPE c LENGTH 255,
+      lv_size     TYPE i,
+      lt_data     TYPE STANDARD TABLE OF tbl1024,
+      lx_content  TYPE xstring,
       lv_header   TYPE string,
       lv_body     TYPE string.
 
@@ -27,6 +30,7 @@ DATA: ls_param  TYPE zxeed_param,
 * Get All Possible Archive Location
 SELECT DISTINCT pathintern FROM zxeed_param
   INTO TABLE lt_path_log.
+
 LOOP AT lt_path_log INTO lv_path_log.
 * Get Physical Path
   CALL FUNCTION 'FILE_GET_NAME_USING_PATH'
@@ -65,6 +69,42 @@ LOOP AT lt_path_log INTO lv_path_log.
      AND ls_file-name+0(20) CO '0123456789'
      AND ls_file-name+21(10) CO '0123456789'.
       CONCATENATE lv_path_phy ls_file-name INTO lv_filename.
+      MOVE ls_file-name+0(20) TO lv_seqno.
+      MOVE ls_file-name+21(10) TO lv_age.
+
+      MOVE ls_file-name+0(20) TO lv_seqno.
+      MOVE ls_file-name+21(10) TO lv_age.
+      ls_param-rfcdest = 'SLT-GCR-RELAY-01'.
+      ls_param-src_sysid = 'RT1'.
+      ls_param-src_db = 'DEFAULT'.
+      ls_param-src_schema = 'DEFAULT'.
+      ls_param-tabname = 'GLPCA'.
+
+      CALL FUNCTION 'Z_XEED_RESEND_DATA'
+        STARTING NEW TASK 'SEND'
+        EXPORTING
+          i_param          = ls_param
+          i_filename       = lv_filename
+          i_seq_no         = lv_seqno
+          i_age            = lv_age
+          i_delete         = abap_true
+        EXCEPTIONS
+          rfc_error        = 1
+          connection_error = 2
+          resource_failure = 3
+          OTHERS           = 4.
+      WRITE sy-subrc.
+*      DELETE DATASET lv_filename.
+*      WRITE: lv_status.
+      "      DELETE DATASET lv_filename.
+      "      OPEN DATASET lv_filename FOR OUTPUT IN BINARY MODE.
+      "      READ DATASET lv_filename INTO lx_content.
+      "      WRITE lx_content.
+      "      CLOSE DATASET lv_filename.
+*      DELETE DATASET lv_filename.
+*      EXIT.
+*      READ DATASET lv_filename INTO lv_header.
+*      READ DATASET lv_filename INTO lv_body.
 *      MOVE ls_file-name+0(20) TO lv_seqno.
 *      MOVE ls_file-name+21(10) TO lv_age.
 *      OPEN DATASET lv_filename FOR INPUT IN TEXT MODE ENCODING DEFAULT.
@@ -96,3 +136,6 @@ LOOP AT lt_path_log INTO lv_path_log.
     ENDIF.
   ENDLOOP.
 ENDLOOP.
+
+FORM processing_done USING taskname.
+ENDFORM.

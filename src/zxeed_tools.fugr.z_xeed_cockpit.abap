@@ -72,7 +72,7 @@ FUNCTION z_xeed_cockpit.
           i_header   = lo_header_data
           i_data     = lo_iniload_data
         IMPORTING
-          e_xcontent = lx_iniload_json.
+          e_content  = lx_iniload_json.
 
       CALL FUNCTION 'Z_XEED_SEND_DATA'
         EXPORTING
