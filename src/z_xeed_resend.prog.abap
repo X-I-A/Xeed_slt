@@ -80,20 +80,20 @@ LOOP AT lt_path_log INTO lv_path_log.
       ls_param-src_schema = 'DEFAULT'.
       ls_param-tabname = 'GLPCA'.
 
-      CALL FUNCTION 'Z_XEED_RESEND_DATA'
-        STARTING NEW TASK 'SEND'
-        EXPORTING
-          i_param          = ls_param
-          i_filename       = lv_filename
-          i_seq_no         = lv_seqno
-          i_age            = lv_age
-          i_delete         = abap_true
-        EXCEPTIONS
-          rfc_error        = 1
-          connection_error = 2
-          resource_failure = 3
-          OTHERS           = 4.
-      WRITE sy-subrc.
+*      CALL FUNCTION 'Z_XEED_RESEND_DATA'
+*        STARTING NEW TASK 'SEND'
+*        EXPORTING
+*          i_param          = ls_param
+*          i_filename       = lv_filename
+*          i_seq_no         = lv_seqno
+*          i_age            = lv_age
+*          i_delete         = abap_true
+*        EXCEPTIONS
+*          rfc_error        = 1
+*          connection_error = 2
+*          resource_failure = 3
+*          OTHERS           = 4.
+*      WRITE sy-subrc.
 *      DELETE DATASET lv_filename.
 *      WRITE: lv_status.
       "      DELETE DATASET lv_filename.

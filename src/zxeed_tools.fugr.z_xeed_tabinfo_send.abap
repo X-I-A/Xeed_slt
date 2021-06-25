@@ -2,8 +2,6 @@ FUNCTION z_xeed_tabinfo_send .
 *"----------------------------------------------------------------------
 *"*"Local Interface:
 *"  IMPORTING
-*"     VALUE(I_MT_ID) TYPE  DMC_MT_IDENTIFIER
-*"     VALUE(I_TABNAME) TYPE  DMC_DB_TABNAME
 *"     VALUE(I_SETTINGS) TYPE  ZXEED_SETTINGS
 *"  EXCEPTIONS
 *"      RFC_ERROR
@@ -17,8 +15,8 @@ FUNCTION z_xeed_tabinfo_send .
 
   CALL FUNCTION 'Z_XEED_TABINFO_GET'
     EXPORTING
-      i_mt_id          = i_mt_id
-      i_tabname        = i_tabname
+      i_mt_id          = i_settings-mt_id
+      i_tabname        = i_settings-tabname
     TABLES
       et_tabinfo       = lt_tabinfo
     EXCEPTIONS
@@ -46,9 +44,22 @@ FUNCTION z_xeed_tabinfo_send .
     CALL FUNCTION 'Z_XEED_DATA_SEND'
       STARTING NEW TASK 'SEND'
       EXPORTING
-        i_content  = lx_json_tab
-        i_age      = ls_tab_header-current_age
-        i_operate  = ls_tab_header-operate_flag
-        i_settings = i_settings.
+        i_content        = lx_json_tab
+        i_age            = ls_tab_header-current_age
+        i_operate        = ls_tab_header-operate_flag
+        i_settings       = i_settings
+      EXCEPTIONS
+        rfc_error        = 1
+        connection_error = 2
+        resource_failure = 3
+        OTHERS           = 4.
+    IF sy-subrc IS NOT INITIAL.
+      CALL FUNCTION 'Z_XEED_DATA_ARCHIVE'
+        EXPORTING
+          i_settings = i_settings
+          i_content  = lx_json_tab
+          i_age      = ls_tab_header-current_age
+          i_operate  = ls_tab_header-operate_flag.
+    ENDIF.
   ENDIF.
 ENDFUNCTION.
