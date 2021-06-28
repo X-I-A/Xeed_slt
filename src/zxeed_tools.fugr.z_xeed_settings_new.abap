@@ -1,4 +1,4 @@
-FUNCTION Z_XEED_SETTINGS_NEW .
+FUNCTION z_xeed_settings_new .
 *"----------------------------------------------------------------------
 *"*"Local Interface:
 *"  IMPORTING
@@ -17,6 +17,37 @@ FUNCTION Z_XEED_SETTINGS_NEW .
   DATA: lv_timestamp  TYPE timestampl,
         lv_seq_no_tmp TYPE char32,
         lv_seq_no     TYPE char20.
+
+* Lock before continue (lock by default = 5 seconds, we will wait 1 minutes)
+  DO 12 TIMES.
+    CALL FUNCTION 'ENQUEUE_EZXEED'
+      EXPORTING
+        mt_id          = i_mt_id
+        tabname        = i_tabname
+        _wait          = abap_true
+      EXCEPTIONS
+        foreign_lock   = 1
+        system_failure = 2
+        OTHERS         = 3.
+    IF sy-subrc = 1.
+* Wait for the lock
+      CONTINUE.
+    ELSEIF sy-subrc > 1.
+* Real exception code here
+    ELSE.
+      EXIT.
+    ENDIF.
+  ENDDO.
+
+* Should retry to make sure that nothing has been changed during the lock acquire
+  SELECT SINGLE * INTO e_settings
+    FROM zxeed_settings
+   WHERE mt_id   = i_mt_id
+     AND tabname = i_tabname.
+  IF sy-subrc IS INITIAL.
+* Entry found, that mean setting has been created during the lock acquire return the found one as new settings
+    RETURN.
+  ENDIF.
 
 * Primary Key
   MOVE i_mt_id TO e_settings-mt_id.
@@ -59,6 +90,7 @@ FUNCTION Z_XEED_SETTINGS_NEW .
     EXPORTING
       nr_range_nr = ls_nriv-nrrangenr
       object      = ls_nriv-object
+      quantity    = 2
     IMPORTING
       number      = ls_nriv-nrlevel.
 
@@ -72,4 +104,10 @@ FUNCTION Z_XEED_SETTINGS_NEW .
   CONCATENATE lv_seq_no_tmp(14) lv_seq_no_tmp+15(6) INTO e_settings-start_seq.
 
   MODIFY zxeed_settings FROM e_settings.
+
+* Unlock at the end
+  CALL FUNCTION 'DEQUEUE_EZXEED'
+    EXPORTING
+      mt_id   = i_mt_id
+      tabname = i_tabname.
 ENDFUNCTION.

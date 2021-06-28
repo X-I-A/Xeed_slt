@@ -101,8 +101,8 @@ METHOD if_badi_iuuc_repl_olo_exit~write_data_for_initial_load.
       IMPORTING
         e_content = lx_json.
 
+    CLEAR ls_settings-rfcdest.
     CALL FUNCTION 'Z_XEED_DATA_SEND'
-      STARTING NEW TASK 'SEND'
       EXPORTING
         i_content        = lx_json
         i_age            = lv_current_age
@@ -113,14 +113,6 @@ METHOD if_badi_iuuc_repl_olo_exit~write_data_for_initial_load.
         connection_error = 2
         resource_failure = 3
         OTHERS           = 4.
-    IF sy-subrc IS NOT INITIAL.
-      CALL FUNCTION 'Z_XEED_DATA_ARCHIVE'
-        EXPORTING
-          i_settings = ls_settings
-          i_content  = lx_json
-          i_age      = lv_current_age
-          i_operate  = ls_header-operate_flag.
-    ENDIF.
   ENDLOOP.
 ENDMETHOD.
 
@@ -195,7 +187,6 @@ METHOD if_badi_iuuc_repl_olo_exit~write_data_for_repl.
         e_content = lx_json.
 
     CALL FUNCTION 'Z_XEED_DATA_SEND'
-      STARTING NEW TASK 'SEND'
       EXPORTING
         i_content        = lx_json
         i_age            = lv_current_age
@@ -206,14 +197,6 @@ METHOD if_badi_iuuc_repl_olo_exit~write_data_for_repl.
         connection_error = 2
         resource_failure = 3
         OTHERS           = 4.
-    IF sy-subrc IS NOT INITIAL.
-      CALL FUNCTION 'Z_XEED_DATA_ARCHIVE'
-        EXPORTING
-          i_settings = ls_settings
-          i_content  = lx_json
-          i_age      = lv_current_age
-          i_operate  = ls_header-operate_flag.
-    ENDIF.
   ENDLOOP.
 ENDMETHOD.
 
@@ -300,7 +283,6 @@ METHOD if_badi_iuuc_repl_olo_exit~write_data_for_repl_cluster.
           e_content = lx_json.
 
       CALL FUNCTION 'Z_XEED_DATA_SEND'
-        STARTING NEW TASK 'SEND'
         EXPORTING
           i_content        = lx_json
           i_age            = lv_current_age
@@ -311,13 +293,8 @@ METHOD if_badi_iuuc_repl_olo_exit~write_data_for_repl_cluster.
           connection_error = 2
           resource_failure = 3
           OTHERS           = 4.
-      IF sy-subrc IS NOT INITIAL.
-        CALL FUNCTION 'Z_XEED_DATA_ARCHIVE'
-          EXPORTING
-            i_settings = ls_settings
-            i_content  = lx_json
-            i_age      = lv_current_age
-            i_operate  = ls_header-operate_flag.
+      IF sy-subrc <> 0.
+* Implement suitable error handling here
       ENDIF.
     ENDLOOP.
   ENDIF.
@@ -381,7 +358,6 @@ METHOD if_badi_iuuc_repl_olo_exit~write_data_for_repl_cluster.
         e_content = lx_json.
 
     CALL FUNCTION 'Z_XEED_DATA_SEND'
-      STARTING NEW TASK 'SEND'
       EXPORTING
         i_content        = lx_json
         i_age            = lv_current_age
@@ -392,15 +368,9 @@ METHOD if_badi_iuuc_repl_olo_exit~write_data_for_repl_cluster.
         connection_error = 2
         resource_failure = 3
         OTHERS           = 4.
-    IF sy-subrc IS NOT INITIAL.
-      CALL FUNCTION 'Z_XEED_DATA_ARCHIVE'
-        EXPORTING
-          i_settings = ls_settings
-          i_content  = lx_json
-          i_age      = lv_current_age
-          i_operate  = ls_header-operate_flag.
+    IF sy-subrc <> 0.
+* Implement suitable error handling here
     ENDIF.
   ENDLOOP.
-
 ENDMETHOD.
 ENDCLASS.

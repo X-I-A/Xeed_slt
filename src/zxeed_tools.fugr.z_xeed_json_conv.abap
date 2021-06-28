@@ -7,18 +7,29 @@ FUNCTION z_xeed_json_conv.
 *"  EXPORTING
 *"     REFERENCE(E_CONTENT) TYPE  XSTRING
 *"----------------------------------------------------------------------
-  FIELD-SYMBOLS: <fs_header>    TYPE ANY,
-                 <fs_data_tab>  TYPE ANY.
-
-  DATA(lo_json_writer) = cl_sxml_string_writer=>create( type = if_sxml=>co_xt_json no_empty_elements = 'X' ).
-
-  ASSIGN i_header->* TO <fs_header>.
-  ASSIGN i_data->* TO <fs_data_tab>.
-
-  CALL TRANSFORMATION id
-        SOURCE header = <fs_header> data = <fs_data_tab>
-        RESULT XML lo_json_writer.
-
-  e_content = lo_json_writer->get_output( ).
+  CALL FUNCTION 'Z_XEED_JSON_CONV_KNL'
+    EXPORTING
+      i_header    = i_header
+      i_data      = i_data
+    IMPORTING
+      e_content   = e_content
+    EXCEPTIONS
+      conv_failed = 1
+      OTHERS      = 2.
+  IF sy-subrc <> 0.
+* When kernal transformation failed, we will try to use the slower one
+    CALL FUNCTION 'Z_XEED_JSON_CONV_UI2'
+      EXPORTING
+        i_header    = i_header
+        i_data      = i_data
+      IMPORTING
+        e_content   = e_content
+      EXCEPTIONS
+        conv_failed = 1
+        OTHERS      = 2.
+    IF sy-subrc <> 0.
+* Implement suitable error handling here
+    ENDIF.
+  ENDIF.
 
 ENDFUNCTION.

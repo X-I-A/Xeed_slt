@@ -42,7 +42,6 @@ FUNCTION z_xeed_tabinfo_send .
         e_content = lx_json_tab.
 
     CALL FUNCTION 'Z_XEED_DATA_SEND'
-      STARTING NEW TASK 'SEND'
       EXPORTING
         i_content        = lx_json_tab
         i_age            = ls_tab_header-current_age
@@ -54,12 +53,6 @@ FUNCTION z_xeed_tabinfo_send .
         resource_failure = 3
         OTHERS           = 4.
     IF sy-subrc IS NOT INITIAL.
-      CALL FUNCTION 'Z_XEED_DATA_ARCHIVE'
-        EXPORTING
-          i_settings = i_settings
-          i_content  = lx_json_tab
-          i_age      = ls_tab_header-current_age
-          i_operate  = ls_tab_header-operate_flag.
     ENDIF.
   ENDIF.
 ENDFUNCTION.

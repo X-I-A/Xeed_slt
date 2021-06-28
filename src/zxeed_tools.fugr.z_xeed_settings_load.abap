@@ -34,10 +34,11 @@ FUNCTION z_xeed_settings_load .
 * Implement suitable error handling here
     ENDIF.
   ELSEIF i_check_guid EQ abap_true.
-    SELECT SINGLE guid INTO lv_new_guid
-      FROM dmc_cobj
-     WHERE source_id = i_mt_id
-       AND cobj_alias = i_tabname.
+
+    SELECT SINGLE cobj_guid INTO lv_new_guid
+      FROM dmc_mt_tables
+     WHERE id = i_mt_id
+       AND tabname = i_tabname.
     IF sy-subrc IS NOT INITIAL.
 * Case 2: Nothing is found => Abnormal
       RAISE not_found.

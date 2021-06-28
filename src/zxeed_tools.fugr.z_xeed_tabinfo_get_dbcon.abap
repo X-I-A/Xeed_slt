@@ -56,11 +56,11 @@ FUNCTION z_xeed_tabinfo_get_dbcon .
     ls_tabinfo-position = <ls_field>-position.
     ls_tabinfo-datatype = <ls_field>-data_type.
     IF <ls_field>-data_length IS NOT INITIAL.
-      ls_tabinfo-leng = <ls_field>-data_length.
+      MOVE <ls_field>-data_length TO ls_tabinfo-leng.
     ELSE.
-      ls_tabinfo-leng = <ls_field>-data_precision.
+      MOVE <ls_field>-data_precision TO ls_tabinfo-leng.
     ENDIF.
-    ls_tabinfo-decimals = <ls_field>-decimals.
+    ls_tabinfo-decimals = |{ CONV string( <ls_field>-decimals ) WIDTH = 6 ALPHA = IN }|.
     READ TABLE lt_keyfields INTO ls_keyfield WITH KEY col_name = <ls_field>-col_name.
     IF sy-subrc = 0.
       ls_tabinfo-keyflag =  abap_true.

@@ -3,7 +3,7 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <PROGDIR>
-    <NAME>Z_XEED_RESEND</NAME>
+    <NAME>Z_XEED_ASYNCRO_SEND</NAME>
     <SUBC>1</SUBC>
     <RSTAT>K</RSTAT>
     <RLOAD>E</RLOAD>
@@ -13,7 +13,7 @@
    <TPOOL>
     <item>
      <ID>R</ID>
-     <ENTRY>Xeed SLT To HTTP Resend Archived Files</ENTRY>
+     <ENTRY>Xeed SLT To HTTP Asynchro send</ENTRY>
      <LENGTH>38</LENGTH>
     </item>
    </TPOOL>
