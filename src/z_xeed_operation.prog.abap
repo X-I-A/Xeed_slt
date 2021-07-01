@@ -146,10 +146,8 @@ START-OF-SELECTION.
       gs_rul_map-tabname = o_tabnam-low.
       gs_rul_map-basisversion = o_basis-low.
       gs_rul_map-event = 'EOT'.
-      gs_rul_map-include = 'Z_XEED_LOAD'.
       gs_rul_map-status = '02'.
-      CONCATENATE '''' o_mtid-low '''' INTO gs_rul_map-imp_param_1.
-      CONCATENATE '''' o_tabnam-low '''' INTO gs_rul_map-imp_param_2.
+      CONCATENATE 'Z_XEED_LOAD_' o_mtid-low '_' o_tabnam-low INTO gs_rul_map-include.
       APPEND gs_rul_map TO gt_rul_map.
     ENDLOOP.
     IF gt_xeed_param[] IS NOT INITIAL AND gt_rul_map[] IS NOT INITIAL.
@@ -186,7 +184,7 @@ START-OF-SELECTION.
       DELETE FROM iuuc_ass_rul_map
       WHERE mt_id   = o_mtid-low
         AND tabname = o_tabnam-low
-        AND include = 'Z_XEED_LOAD'.
+        AND include LIKE 'Z_XEED_LOAD%'.
 
     ENDLOOP.
     WRITE 'Entry Deleted Successfully'(s03).

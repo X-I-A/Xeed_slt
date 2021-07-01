@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_SRFC" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <SRFC>
+    <HEADER>
+     <ID>Z_XEED_DATA_POST</ID>
+     <VERSION>A</VERSION>
+     <FUNCNAME>Z_XEED_DATA_POST</FUNCNAME>
+    </HEADER>
+    <TEXT>
+     <ID>Z_XEED_DATA_POST</ID>
+     <VERSION>A</VERSION>
+     <LANG>E</LANG>
+     <SHORTTEXT>Default RFC Service for Function-Module: Z_XEED_DATA_POST</SHORTTEXT>
+    </TEXT>
+   </SRFC>
+  </asx:values>
+ </asx:abap>
+</abapGit>

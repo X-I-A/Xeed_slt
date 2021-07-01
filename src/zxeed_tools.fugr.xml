@@ -9,25 +9,25 @@
    </INCLUDES>
    <FUNCTIONS>
     <item>
-     <FUNCNAME>Z_XEED_ARCHIVE_DATA</FUNCNAME>
+     <FUNCNAME>Z_XEED_DATA_ARCHIVE</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
      <SHORT_TEXT>Save Data to a local path</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_CONTENT</PARAMETER>
-       <TYP>STRING</TYP>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>I_SEQ_NO</PARAMETER>
-       <TYP>CHAR20</TYP>
+       <TYP>XSTRING</TYP>
       </RSIMP>
       <RSIMP>
        <PARAMETER>I_AGE</PARAMETER>
        <TYP>NUMC10</TYP>
       </RSIMP>
       <RSIMP>
-       <PARAMETER>I_PARAM</PARAMETER>
-       <TYP>ZXEED_PARAM</TYP>
+       <PARAMETER>I_OPERATE</PARAMETER>
+       <TYP>ZXEED_D_OPERATE</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_SETTINGS</PARAMETER>
+       <TYP>ZXEED_SETTINGS</TYP>
       </RSIMP>
      </IMPORT>
      <EXCEPTION>
@@ -42,17 +42,17 @@
        <STEXT>Data</STEXT>
       </RSFDO>
       <RSFDO>
-       <PARAMETER>I_SEQ_NO</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Sequence Number</STEXT>
-      </RSFDO>
-      <RSFDO>
        <PARAMETER>I_AGE</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Age Number</STEXT>
       </RSFDO>
       <RSFDO>
-       <PARAMETER>I_PARAM</PARAMETER>
+       <PARAMETER>I_OPERATE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Xeed Operate Flag</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_SETTINGS</PARAMETER>
        <KIND>P</KIND>
        <STEXT>SLT 2 HTTP Parameter Table</STEXT>
       </RSFDO>
@@ -64,185 +64,25 @@
      </DOCUMENTATION>
     </item>
     <item>
-     <FUNCNAME>Z_XEED_COCKPIT</FUNCNAME>
-     <SHORT_TEXT>Xeed SLT Http Agent Load Management</SHORT_TEXT>
-     <IMPORT>
-      <RSIMP>
-       <PARAMETER>I_DATA</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>REF TO DATA</TYP>
-       <REF_CLASS>X</REF_CLASS>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>I_MT_ID</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>DMC_MT_IDENTIFIER</TYP>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>I_TABNAME</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>TABNAME</TYP>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>I_PARAM</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>ZXEED_PARAM</TYP>
-      </RSIMP>
-     </IMPORT>
-     <DOCUMENTATION>
-      <RSFDO>
-       <PARAMETER>I_DATA</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Source Data</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>I_MT_ID</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Mass Transfer ID</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>I_TABNAME</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Table Name</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>I_PARAM</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>SLT 2 HTTP Parameter Table</STEXT>
-      </RSFDO>
-     </DOCUMENTATION>
-    </item>
-    <item>
-     <FUNCNAME>Z_XEED_GET_DATA_FRAG_SIZE</FUNCNAME>
-     <SHORT_TEXT>Get Data Frag Size</SHORT_TEXT>
-     <IMPORT>
-      <RSIMP>
-       <PARAMETER>I_DATA</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>REF TO DATA</TYP>
-       <REF_CLASS>X</REF_CLASS>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>I_SIZE_LIMIT</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>I</TYP>
-      </RSIMP>
-     </IMPORT>
-     <EXPORT>
-      <RSEXP>
-       <PARAMETER>E_FRAG_SIZE</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>I</TYP>
-      </RSEXP>
-     </EXPORT>
-     <DOCUMENTATION>
-      <RSFDO>
-       <PARAMETER>I_DATA</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Input Data</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>I_SIZE_LIMIT</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Size Limit (KBytes)</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>E_FRAG_SIZE</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Size (line numer)</STEXT>
-      </RSFDO>
-     </DOCUMENTATION>
-    </item>
-    <item>
-     <FUNCNAME>Z_XEED_GET_INILOAD</FUNCNAME>
-     <SHORT_TEXT>Get initial load related information</SHORT_TEXT>
-     <IMPORT>
-      <RSIMP>
-       <PARAMETER>I_MT_ID</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>DMC_MT_IDENTIFIER</TYP>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>I_TABNAME</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>TABNAME</TYP>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>I_SEQ_NO</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>CHAR20</TYP>
-      </RSIMP>
-     </IMPORT>
-     <EXPORT>
-      <RSEXP>
-       <PARAMETER>E_HEADERS</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>DDFIELDS</TYP>
-      </RSEXP>
-      <RSEXP>
-       <PARAMETER>E_DASHBOARD</PARAMETER>
-       <REFERENCE>X</REFERENCE>
-       <TYP>ZXEED_DASHBOARD</TYP>
-      </RSEXP>
-     </EXPORT>
-     <EXCEPTION>
-      <RSEXC>
-       <EXCEPTION>NOT_FOUND</EXCEPTION>
-      </RSEXC>
-     </EXCEPTION>
-     <DOCUMENTATION>
-      <RSFDO>
-       <PARAMETER>I_MT_ID</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Mass Transfer ID</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>I_TABNAME</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Table Name</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>I_SEQ_NO</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Sequence No</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>E_HEADERS</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>DD Description Table</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>E_DASHBOARD</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>SLT Transformation Dashbord</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>NOT_FOUND</PARAMETER>
-       <KIND>X</KIND>
-       <STEXT>Data Not Found</STEXT>
-      </RSFDO>
-     </DOCUMENTATION>
-    </item>
-    <item>
-     <FUNCNAME>Z_XEED_POST_DATA</FUNCNAME>
+     <FUNCNAME>Z_XEED_DATA_POST</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
      <SHORT_TEXT>Post SLT Data To Configured Destination</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_CONTENT</PARAMETER>
-       <TYP>STRING</TYP>
+       <TYP>XSTRING</TYP>
       </RSIMP>
       <RSIMP>
-       <PARAMETER>I_SEQ_NO</PARAMETER>
-       <TYP>CHAR20</TYP>
+       <PARAMETER>I_SETTINGS</PARAMETER>
+       <TYP>ZXEED_SETTINGS</TYP>
       </RSIMP>
       <RSIMP>
        <PARAMETER>I_AGE</PARAMETER>
        <TYP>NUMC10</TYP>
       </RSIMP>
       <RSIMP>
-       <PARAMETER>I_PARAM</PARAMETER>
-       <TYP>ZXEED_PARAM</TYP>
+       <PARAMETER>I_OPERATE</PARAMETER>
+       <TYP>ZXEED_D_OPERATE</TYP>
       </RSIMP>
      </IMPORT>
      <EXPORT>
@@ -270,9 +110,9 @@
        <STEXT>Plein Text Content String</STEXT>
       </RSFDO>
       <RSFDO>
-       <PARAMETER>I_SEQ_NO</PARAMETER>
+       <PARAMETER>I_SETTINGS</PARAMETER>
        <KIND>P</KIND>
-       <STEXT>Sequence Number</STEXT>
+       <STEXT>SLT 2 HTTP Parameter Table</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_AGE</PARAMETER>
@@ -280,9 +120,9 @@
        <STEXT>Age Number</STEXT>
       </RSFDO>
       <RSFDO>
-       <PARAMETER>I_PARAM</PARAMETER>
+       <PARAMETER>I_OPERATE</PARAMETER>
        <KIND>P</KIND>
-       <STEXT>SLT 2 HTTP Parameter Table</STEXT>
+       <STEXT>Xeed Operate Flag</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_STATUS</PARAMETER>
@@ -307,25 +147,88 @@
      </DOCUMENTATION>
     </item>
     <item>
-     <FUNCNAME>Z_XEED_SEND_DATA</FUNCNAME>
+     <FUNCNAME>Z_XEED_DATA_RESEND</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
-     <SHORT_TEXT>Send Data Process</SHORT_TEXT>
+     <SHORT_TEXT>Post SLT Data To Configured Destination</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
-       <PARAMETER>I_CONTENT</PARAMETER>
-       <TYP>STRING</TYP>
+       <PARAMETER>I_FILENAME</PARAMETER>
+       <TYP>CHAR255</TYP>
       </RSIMP>
       <RSIMP>
-       <PARAMETER>I_SEQ_NO</PARAMETER>
-       <TYP>CHAR20</TYP>
+       <PARAMETER>I_SETTINGS</PARAMETER>
+       <TYP>ZXEED_SETTINGS</TYP>
       </RSIMP>
       <RSIMP>
        <PARAMETER>I_AGE</PARAMETER>
        <TYP>NUMC10</TYP>
       </RSIMP>
       <RSIMP>
-       <PARAMETER>I_PARAM</PARAMETER>
-       <TYP>ZXEED_PARAM</TYP>
+       <PARAMETER>I_OPERATE</PARAMETER>
+       <TYP>ZXEED_D_OPERATE</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>RFC_ERROR</EXCEPTION>
+      </RSEXC>
+      <RSEXC>
+       <EXCEPTION>CONNECTION_ERROR</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_FILENAME</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Filename to be sent</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_SETTINGS</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>SLT 2 HTTP Parameter Table</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_AGE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Age Number</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_OPERATE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Xeed Operate Flag</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>RFC_ERROR</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Cannot create http client from RFC</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>CONNECTION_ERROR</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Cannot Communicate to Destination</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_DATA_SEND</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>Send Data Process</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_CONTENT</PARAMETER>
+       <TYP>XSTRING</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_AGE</PARAMETER>
+       <TYP>NUMC10</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_OPERATE</PARAMETER>
+       <TYP>ZXEED_D_OPERATE</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_SETTINGS</PARAMETER>
+       <TYP>ZXEED_SETTINGS</TYP>
       </RSIMP>
      </IMPORT>
      <DOCUMENTATION>
@@ -335,19 +238,653 @@
        <STEXT>Send Content</STEXT>
       </RSFDO>
       <RSFDO>
-       <PARAMETER>I_SEQ_NO</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Sequence Number</STEXT>
-      </RSFDO>
-      <RSFDO>
        <PARAMETER>I_AGE</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Age Number</STEXT>
       </RSFDO>
       <RSFDO>
-       <PARAMETER>I_PARAM</PARAMETER>
+       <PARAMETER>I_OPERATE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Xeed Operate Flag</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_SETTINGS</PARAMETER>
        <KIND>P</KIND>
        <STEXT>SLT 2 HTTP Parameter Table</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_FILL_RANGES</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>Fill number ranges</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_NB_OBJECT</PARAMETER>
+       <TYP>NROBJ</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>HORS_SCOPE</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_NB_OBJECT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Name of number range</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>HORS_SCOPE</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Not in Xeed Scope</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_JSON_CONV</FUNCNAME>
+     <SHORT_TEXT>Json Conversion</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_HEADER</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_DATA</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>E_CONTENT</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>XSTRING</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_HEADER</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_DATA</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_CONTENT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>JSON Content</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_JSON_CONV_KNL</FUNCNAME>
+     <SHORT_TEXT>Json Conversion - Kernal Module</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_HEADER</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_DATA</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>E_CONTENT</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>XSTRING</TYP>
+      </RSEXP>
+     </EXPORT>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>CONV_FAILED</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_HEADER</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_DATA</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_CONTENT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>JSON Content</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>CONV_FAILED</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Conversion failed</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_JSON_CONV_UI2</FUNCNAME>
+     <SHORT_TEXT>Json Conversion</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_HEADER</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_DATA</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>E_CONTENT</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>XSTRING</TYP>
+      </RSEXP>
+     </EXPORT>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>CONV_FAILED</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_HEADER</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_DATA</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_CONTENT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>JSON Content</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>CONV_FAILED</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Conversion failed</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_KEYTAB_CREATE</FUNCNAME>
+     <SHORT_TEXT>Create key table from field list</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_FULLTAB</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <REFERENCE>X</REFERENCE>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_KEYLIST</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <REFERENCE>X</REFERENCE>
+       <TYP>IF_BADI_IUUC_REPL_OLO_EXIT=&gt;GTY_T_KEYFIELD</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>E_KEYTAB</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>REF TO DATA</TYP>
+       <REF_CLASS>X</REF_CLASS>
+      </RSEXP>
+     </EXPORT>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>NO_DATA</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_FULLTAB</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_KEYLIST</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_KEYTAB</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Output table</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>NO_DATA</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>No data found in the fulltab</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_SETTINGS_LOAD</FUNCNAME>
+     <SHORT_TEXT>Get initial load related information</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>DMC_MT_IDENTIFIER</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>DMC_DB_TABNAME</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_CHECK_GUID</PARAMETER>
+       <DEFAULT>ABAP_TRUE</DEFAULT>
+       <OPTIONAL>X</OPTIONAL>
+       <REFERENCE>X</REFERENCE>
+       <TYP>BOOLE_D</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>E_SETTINGS</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>ZXEED_SETTINGS</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>E_CURRENT_AGE</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>NUMC10</TYP>
+      </RSEXP>
+     </EXPORT>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>NOT_FOUND</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Mass Transfer ID</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table Name</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_CHECK_GUID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Check if there is a new initial load</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_SETTINGS</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>SLT Transformation Settings</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_CURRENT_AGE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Current Age Number</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>NOT_FOUND</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Data Not Found</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_SETTINGS_NEW</FUNCNAME>
+     <SHORT_TEXT>Get initial load related information</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>DMC_MT_IDENTIFIER</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>DMC_DB_TABNAME</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>E_SETTINGS</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>ZXEED_SETTINGS</TYP>
+      </RSEXP>
+     </EXPORT>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>NOT_FOUND</EXCEPTION>
+      </RSEXC>
+      <RSEXC>
+       <EXCEPTION>NO_NUMBER_RANGE</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Mass Transfer ID</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table Name</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_SETTINGS</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>SLT Transformation Settings</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>NOT_FOUND</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Replication Not Found</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>NO_NUMBER_RANGE</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>No available Number range</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_SETTINGS_RESET</FUNCNAME>
+     <SHORT_TEXT>Get initial load related information</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>DMC_MT_IDENTIFIER</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>DMC_DB_TABNAME</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_GUID</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>DMC_CONVOBJECT_GUID</TYP>
+      </RSIMP>
+     </IMPORT>
+     <CHANGING>
+      <RSCHA>
+       <PARAMETER>E_SETTINGS</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>ZXEED_SETTINGS</TYP>
+      </RSCHA>
+     </CHANGING>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>NOT_FOUND</EXCEPTION>
+      </RSEXC>
+      <RSEXC>
+       <EXCEPTION>NO_NUMBER_RANGE</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Mass Transfer ID</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table Name</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_GUID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>New GUID</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>E_SETTINGS</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>SLT Settings</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>NOT_FOUND</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Replication Not Found</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>NO_NUMBER_RANGE</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>No available Number range</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_TABINFO_GET</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>Get Header Data</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <TYP>DMC_MT_IDENTIFIER</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <TYP>DMC_DB_TABNAME</TYP>
+      </RSIMP>
+     </IMPORT>
+     <TABLES>
+      <RSTBL>
+       <PARAMETER>ET_TABINFO</PARAMETER>
+       <DBSTRUCT>ZXEED_S_TABINFO</DBSTRUCT>
+       <OPTIONAL>X</OPTIONAL>
+      </RSTBL>
+     </TABLES>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>RFC_ERROR</EXCEPTION>
+      </RSEXC>
+      <RSEXC>
+       <EXCEPTION>CONNECTION_ERROR</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Mass Transfer ID</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table Name</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ET_TABINFO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table structure</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>RFC_ERROR</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Cannot create http client from RFC</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>CONNECTION_ERROR</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Cannot Communicate to Destination</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_TABINFO_GET_DBCON</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>Get Table Information from RFC</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <TYP>DMC_DB_TABNAME</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_GUID</PARAMETER>
+       <TYP>IUUC_REPL_CONFIG_GUID</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <TYP>DMC_MT_IDENTIFIER</TYP>
+      </RSIMP>
+     </IMPORT>
+     <TABLES>
+      <RSTBL>
+       <PARAMETER>ET_TABINFO</PARAMETER>
+       <DBSTRUCT>ZXEED_S_TABINFO</DBSTRUCT>
+       <OPTIONAL>X</OPTIONAL>
+      </RSTBL>
+     </TABLES>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>RFC_ERROR</EXCEPTION>
+      </RSEXC>
+      <RSEXC>
+       <EXCEPTION>CONNECTION_ERROR</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table Name</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_GUID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Destination table for Remote Function Call</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_MT_ID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Mass Transfer ID</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ET_TABINFO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table structure</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>RFC_ERROR</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Cannot create http client from RFC</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>CONNECTION_ERROR</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Cannot Communicate to Destination</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_TABINFO_GET_RFC</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>Get Table Information from RFC</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <TYP>DMC_DB_TABNAME</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>I_RFCDEST</PARAMETER>
+       <TYP>RFCDEST</TYP>
+      </RSIMP>
+     </IMPORT>
+     <TABLES>
+      <RSTBL>
+       <PARAMETER>ET_TABINFO</PARAMETER>
+       <DBSTRUCT>ZXEED_S_TABINFO</DBSTRUCT>
+       <OPTIONAL>X</OPTIONAL>
+      </RSTBL>
+     </TABLES>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>RFC_ERROR</EXCEPTION>
+      </RSEXC>
+      <RSEXC>
+       <EXCEPTION>CONNECTION_ERROR</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_TABNAME</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table Name</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>I_RFCDEST</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Destination table for Remote Function Call</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ET_TABINFO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Table structure</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>RFC_ERROR</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Cannot create http client from RFC</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>CONNECTION_ERROR</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Cannot Communicate to Destination</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>Z_XEED_TABINFO_SEND</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>Get Header Data</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>I_SETTINGS</PARAMETER>
+       <TYP>ZXEED_SETTINGS</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>RFC_ERROR</EXCEPTION>
+      </RSEXC>
+      <RSEXC>
+       <EXCEPTION>CONNECTION_ERROR</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>I_SETTINGS</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>SLT 2 HTTP SDK Setting Table</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>RFC_ERROR</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Cannot create http client from RFC</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>CONNECTION_ERROR</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Cannot Communicate to Destination</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>

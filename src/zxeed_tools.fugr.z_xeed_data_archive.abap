@@ -1,24 +1,24 @@
-FUNCTION z_xeed_archive_data.
+FUNCTION z_xeed_data_archive.
 *"----------------------------------------------------------------------
 *"*"Local Interface:
 *"  IMPORTING
-*"     VALUE(I_CONTENT) TYPE  STRING
-*"     VALUE(I_SEQ_NO) TYPE  CHAR20
+*"     VALUE(I_CONTENT) TYPE  XSTRING
 *"     VALUE(I_AGE) TYPE  NUMC10
-*"     VALUE(I_PARAM) TYPE  ZXEED_PARAM
+*"     VALUE(I_OPERATE) TYPE  ZXEED_D_OPERATE
+*"     VALUE(I_SETTINGS) TYPE  ZXEED_SETTINGS
 *"  EXCEPTIONS
 *"      PATH_ERROR
 *"----------------------------------------------------------------------
   DATA: lv_filename   TYPE c LENGTH 255,
-        lv_fname_json TYPE c LENGTH 255,
-        lv_header TYPE string.
+        lv_fname_json TYPE c LENGTH 255.
+
 
 * WRITE TO FILE - Max 32 Characters
-  CONCATENATE i_seq_no '-' i_age INTO lv_filename.
+  CONCATENATE i_settings-start_seq '-' i_age i_operate INTO lv_filename.
 
   CALL FUNCTION 'FILE_GET_NAME_USING_PATH'
     EXPORTING
-      logical_path               = i_param-pathintern
+      logical_path               = i_settings-pathintern
       file_name                  = lv_filename
     IMPORTING
       file_name_with_path        = lv_fname_json
@@ -32,9 +32,7 @@ FUNCTION z_xeed_archive_data.
     RAISE path_error.
   ENDIF.
 
-  lv_header = /ui2/cl_json=>serialize( data = i_param compress = abap_true pretty_name = /ui2/cl_json=>pretty_mode-none ).
-  OPEN DATASET lv_fname_json FOR OUTPUT IN TEXT MODE ENCODING DEFAULT.
-  TRANSFER lv_header TO lv_fname_json.
+  OPEN DATASET lv_fname_json FOR OUTPUT IN BINARY MODE.
   TRANSFER i_content TO lv_fname_json.
   CLOSE DATASET lv_fname_json.
 
