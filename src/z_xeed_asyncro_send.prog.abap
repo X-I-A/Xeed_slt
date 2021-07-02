@@ -7,7 +7,7 @@ REPORT z_xeed_asyncro_send.
 
 CONSTANTS: dummy TYPE text20 VALUE 'dummy.txt'.
 
-DATA: lt_path_log TYPE TABLE OF zxeed_param-pathintern,
+DATA: lt_path_log TYPE TABLE OF zxeed_settings-pathintern,
       lv_path_log LIKE LINE OF lt_path_log,
       lv_path_phy TYPE salfile-longname,
       lv_path_len TYPE i.
