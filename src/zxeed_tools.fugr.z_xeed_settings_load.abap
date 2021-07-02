@@ -10,6 +10,7 @@ FUNCTION z_xeed_settings_load .
 *"     REFERENCE(E_CURRENT_AGE) TYPE  NUMC10
 *"  EXCEPTIONS
 *"      NOT_FOUND
+*"      NO_NUMBER_RANGE
 *"----------------------------------------------------------------------
   DATA: ls_settings TYPE zxeed_settings,
         lv_new_guid TYPE zxeed_settings-guid.
@@ -30,8 +31,10 @@ FUNCTION z_xeed_settings_load .
         not_found       = 1
         no_number_range = 2
         OTHERS          = 3.
-    IF sy-subrc <> 0.
-* Implement suitable error handling here
+    IF sy-subrc = 1.
+      RAISE not_found.
+    ELSEIF sy-subrc = 2.
+      RAISE no_number_range.
     ENDIF.
   ELSEIF i_check_guid EQ abap_true.
 
@@ -58,8 +61,10 @@ FUNCTION z_xeed_settings_load .
           not_found       = 1
           no_number_range = 2
           OTHERS          = 3.
-      IF sy-subrc <> 0.
-* Implement suitable error handling here
+      IF sy-subrc = 1.
+        RAISE not_found.
+      ELSEIF sy-subrc = 2.
+        RAISE no_number_range.
       ENDIF.
       MOVE-CORRESPONDING ls_settings TO e_settings.
     ENDIF.

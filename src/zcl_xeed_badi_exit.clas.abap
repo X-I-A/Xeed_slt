@@ -101,7 +101,9 @@ METHOD if_badi_iuuc_repl_olo_exit~write_data_for_initial_load.
       IMPORTING
         e_content = lx_json.
 
-    CLEAR ls_settings-rfcdest.
+    IF xstrlen( lx_json ) > ls_settings-async_limit.
+      CLEAR ls_settings-rfcdest.
+    ENDIF.
     CALL FUNCTION 'Z_XEED_DATA_SEND'
       EXPORTING
         i_content        = lx_json
@@ -186,6 +188,9 @@ METHOD if_badi_iuuc_repl_olo_exit~write_data_for_repl.
       IMPORTING
         e_content = lx_json.
 
+    IF xstrlen( lx_json ) > ls_settings-async_limit.
+      CLEAR ls_settings-rfcdest.
+    ENDIF.
     CALL FUNCTION 'Z_XEED_DATA_SEND'
       EXPORTING
         i_content        = lx_json
@@ -282,6 +287,9 @@ METHOD if_badi_iuuc_repl_olo_exit~write_data_for_repl_cluster.
         IMPORTING
           e_content = lx_json.
 
+      IF xstrlen( lx_json ) > ls_settings-async_limit.
+        CLEAR ls_settings-rfcdest.
+      ENDIF.
       CALL FUNCTION 'Z_XEED_DATA_SEND'
         EXPORTING
           i_content        = lx_json
@@ -357,6 +365,9 @@ METHOD if_badi_iuuc_repl_olo_exit~write_data_for_repl_cluster.
       IMPORTING
         e_content = lx_json.
 
+    IF xstrlen( lx_json ) > ls_settings-async_limit.
+      CLEAR ls_settings-rfcdest.
+    ENDIF.
     CALL FUNCTION 'Z_XEED_DATA_SEND'
       EXPORTING
         i_content        = lx_json
